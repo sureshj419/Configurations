@@ -57,36 +57,36 @@ if [ "$#" -eq 1 ]; then
 		echo " winBuild ::"$winBuild
 		
 		executePipeline=false   # executePipeline -- to check if more than one platform build is needed and it is made true or false
-		KONY_MACHINE_LABEL=ios  # KONY_MACHINE_LABEL is defined to trigger the build either on win_slave or mac_slave.
+		ENGIE_MACHINE_LABEL=ios  # ENGIE_MACHINE_LABEL is defined to trigger the build either on win_slave or mac_slave.
 
-		echo "KONY_MACHINE_LABEL before is "$KONY_MACHINE_LABEL
+		echo "ENGIE_MACHINE_LABEL before is "$ENGIE_MACHINE_LABEL
 
 		if [ $iosBuild = true ] && [ $winBuild = true ]; then
 			executePipeline=true
 		else 
 			if [ $iosBuild = true ]; then
-				KONY_MACHINE_LABEL=ios
+				ENGIE_MACHINE_LABEL=ios
 			else 
-				KONY_MACHINE_LABEL=windows
+				ENGIE_MACHINE_LABEL=windows
 			fi
 			
 		fi
-		if [ $KONY_MACHINE_LABEL = "windows" ]; then
+		if [ $ENGIE_MACHINE_LABEL = "windows" ]; then
 			echo "Machine label is windows"
 			if [ $winBuild = false ] && [ $andBuild = true ]; then
 				echo "Checking if Windows job exists"
-				if [[ ! -z $KONY_WIN_SLAVE_INIT_JOB_NAME ]];then
+				if [[ ! -z $ENGIE_WIN_SLAVE_INIT_JOB_NAME ]];then
 					echo "Windows job exists. Redirecting android build to Win Slave"
 				else
 					echo "Windows job does not exists. Redirecting android build to Mac Slave"
-					KONY_MACHINE_LABEL=ios
+					ENGIE_MACHINE_LABEL=ios
 				fi
 			fi
 		else 
 			echo "Machine label is ios"
 		fi
 		echo "executePipeline is "${executePipeline}
-		echo "KONY_MACHINE_LABEL after is "$KONY_MACHINE_LABEL
+		echo "ENGIE_MACHINE_LABEL after is "$ENGIE_MACHINE_LABEL
 		
 		workspaceNew=`echo $WORKSPACE`
 		echo "workspaceNew is ::"$workspaceNew
@@ -104,7 +104,7 @@ if [ "$#" -eq 1 ]; then
 		winPropertyFileName=`echo ${appidkey}_Config_Win.properties`
 		echo "winPropertyFileName ::  $winPropertyFileName"
 		
-		common_config_file_path="C:/kony/PropertiesFiles/ci_config"
+		common_config_file_path="C:/Engie/PropertiesFiles/ci_config"
 		
 		echo "common_config_file_path ::  $common_config_file_path"
 		
@@ -154,7 +154,7 @@ if [ "$#" -eq 1 ]; then
 		# rm -rf $newCommonPropertyFileName 
 		 
 		fi
-		echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $newCommonPropertyFileName
+		echo -e "\r\nexecutePipeline=$executePipeline\r\nENGIE_MACHINE_LABEL=$ENGIE_MACHINE_LABEL" >> $newCommonPropertyFileName
 
 		ws_loc=`printenv MAC_workspace.location`
 		eclipse_loc=`printenv MAC_eclipse.equinox.path`
@@ -166,20 +166,20 @@ if [ "$#" -eq 1 ]; then
 			eclipse_loc=`printenv MAC_eclipse.equinox.path`
 			imgMagic_home=`printenv MAC_imagemagic.home`
 			and_home=`printenv MAC_android.home`
-			KONY_MACHINE_LABEL=ios
-			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${MAC_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$MAC_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${MAC_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${MAC_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${MAC_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${MAC_KONY_WORKSPACE_SUB_FOLDER}" >> $macPropertyFileName
-			echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $macPropertyFileName	
+			ENGIE_MACHINE_LABEL=ios
+			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nENGIE_PLUGIN_CONFIG_FILES=${MAC_ENGIE_PLUGIN_CONFIG_FILES}\r\nENGIE_PROPERTIES_ROOT_DIRECTORY=$MAC_ENGIE_PROPERTIES_ROOT_DIRECTORY\r\nENGIE_CI_SCRIPTS_DIR=${MAC_ENGIE_CI_SCRIPTS_DIR}\r\nENGIE_CI_PROPS_DIR=${MAC_ENGIE_CI_PROPS_DIR}\r\nENGIE_OTA_TEMP_DIR=${MAC_ENGIE_OTA_TEMP_DIR}\r\nENGIE_WORKSPACE_SUB_FOLDER=${MAC_ENGIE_WORKSPACE_SUB_FOLDER}" >> $macPropertyFileName
+			echo -e "\r\nexecutePipeline=$executePipeline\r\nENGIE_MACHINE_LABEL=$ENGIE_MACHINE_LABEL" >> $macPropertyFileName	
 			
 			ws_loc=`printenv WIN_workspace.location`
 			eclipse_loc=`printenv WIN_eclipse.equinox.path`
 			imgMagic_home=`printenv WIN_imagemagic.home`
 			and_home=`printenv WIN_android.home`
-			KONY_MACHINE_LABEL=windows
-			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${WIN_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$WIN_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${WIN_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${WIN_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${WIN_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${WIN_KONY_WORKSPACE_SUB_FOLDER}" >> $winPropertyFileName
-			echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $winPropertyFileName
+			ENGIE_MACHINE_LABEL=windows
+			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nENGIE_PLUGIN_CONFIG_FILES=${WIN_ENGIE_PLUGIN_CONFIG_FILES}\r\nENGIE_PROPERTIES_ROOT_DIRECTORY=$WIN_ENGIE_PROPERTIES_ROOT_DIRECTORY\r\nENGIE_CI_SCRIPTS_DIR=${WIN_ENGIE_CI_SCRIPTS_DIR}\r\nENGIE_CI_PROPS_DIR=${WIN_ENGIE_CI_PROPS_DIR}\r\nENGIE_OTA_TEMP_DIR=${WIN_ENGIE_OTA_TEMP_DIR}\r\nENGIE_WORKSPACE_SUB_FOLDER=${WIN_ENGIE_WORKSPACE_SUB_FOLDER}" >> $winPropertyFileName
+			echo -e "\r\nexecutePipeline=$executePipeline\r\nENGIE_MACHINE_LABEL=$ENGIE_MACHINE_LABEL" >> $winPropertyFileName
 		else 
 
-			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
+			if [ "$ENGIE_MACHINE_LABEL" = "ios" ]; then
 				ws_loc=`printenv MAC_workspace.location`
 				eclipse_loc=`printenv MAC_eclipse.equinox.path`
 				imgMagic_home=`printenv MAC_imagemagic.home`
@@ -198,10 +198,10 @@ if [ "$#" -eq 1 ]; then
 
 			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}" >> $newCommonPropertyFileName
 			
-			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
-				echo -e "\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${MAC_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$MAC_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${MAC_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${MAC_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${MAC_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${MAC_KONY_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
+			if [ "$ENGIE_MACHINE_LABEL" = "ios" ]; then
+				echo -e "\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nENGIE_PLUGIN_CONFIG_FILES=${MAC_ENGIE_PLUGIN_CONFIG_FILES}\r\nENGIE_PROPERTIES_ROOT_DIRECTORY=$MAC_ENGIE_PROPERTIES_ROOT_DIRECTORY\r\nENGIE_CI_SCRIPTS_DIR=${MAC_ENGIE_CI_SCRIPTS_DIR}\r\nENGIE_CI_PROPS_DIR=${MAC_ENGIE_CI_PROPS_DIR}\r\nENGIE_OTA_TEMP_DIR=${MAC_ENGIE_OTA_TEMP_DIR}\r\nENGIE_WORKSPACE_SUB_FOLDER=${MAC_ENGIE_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
 			else
-				echo -e "\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${WIN_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$WIN_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${WIN_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${WIN_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${WIN_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${WIN_KONY_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
+				echo -e "\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nENGIE_PLUGIN_CONFIG_FILES=${WIN_ENGIE_PLUGIN_CONFIG_FILES}\r\nENGIE_PROPERTIES_ROOT_DIRECTORY=$WIN_ENGIE_PROPERTIES_ROOT_DIRECTORY\r\nENGIE_CI_SCRIPTS_DIR=${WIN_ENGIE_CI_SCRIPTS_DIR}\r\nENGIE_CI_PROPS_DIR=${WIN_ENGIE_CI_PROPS_DIR}\r\nENGIE_OTA_TEMP_DIR=${WIN_ENGIE_OTA_TEMP_DIR}\r\nENGIE_WORKSPACE_SUB_FOLDER=${WIN_ENGIE_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
 			fi
 			
 		fi
@@ -213,8 +213,8 @@ if [ "$#" -eq 1 ]; then
 		 
 		## DELETING BINARIES FOLDERS IN MASTER 
 		if [ "$executePipeline" = "true" ]; then
-			echo "executePipeline is true deleting both workspace binaries in ::$KONY_WIN_SLAVE_MAIN_JOB_NAME :: and ::$KONY_MAC_SLAVE_MAIN_JOB_NAME jobs"
-				cd "$JENKINS_HOME/jobs/$KONY_WIN_SLAVE_MAIN_JOB_NAME"
+			echo "executePipeline is true deleting both workspace binaries in ::$ENGIE_WIN_SLAVE_MAIN_JOB_NAME :: and ::$ENGIE_MAC_SLAVE_MAIN_JOB_NAME jobs"
+				cd "$JENKINS_HOME/jobs/$ENGIE_WIN_SLAVE_MAIN_JOB_NAME"
 				if [ -d "workspace" ]; then
 					cd workspace
 					pwd
@@ -222,7 +222,7 @@ if [ "$#" -eq 1 ]; then
 					rm -rf binaries
 				fi
 
-				cd "$JENKINS_HOME/jobs/$KONY_MAC_SLAVE_MAIN_JOB_NAME"
+				cd "$JENKINS_HOME/jobs/$ENGIE_MAC_SLAVE_MAIN_JOB_NAME"
 				if [ -d "workspace" ]; then
 					cd workspace
 					pwd
@@ -230,9 +230,9 @@ if [ "$#" -eq 1 ]; then
 					rm -rf binaries
 				fi
 		else 
-			echo "executePipeline is false and KONY_MACHINE_LABEL is ::$KONY_MACHINE_LABEL"
-			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
-				cd "$JENKINS_HOME/jobs/$KONY_MAC_SLAVE_MAIN_JOB_NAME"
+			echo "executePipeline is false and ENGIE_MACHINE_LABEL is ::$ENGIE_MACHINE_LABEL"
+			if [ "$ENGIE_MACHINE_LABEL" = "ios" ]; then
+				cd "$JENKINS_HOME/jobs/$ENGIE_MAC_SLAVE_MAIN_JOB_NAME"
 				if [ -d "workspace" ]; then
 					cd workspace
 					pwd
@@ -240,7 +240,7 @@ if [ "$#" -eq 1 ]; then
 					rm -rf binaries
 				fi
 			else
-				cd "$JENKINS_HOME/jobs/$KONY_WIN_SLAVE_MAIN_JOB_NAME"
+				cd "$JENKINS_HOME/jobs/$ENGIE_WIN_SLAVE_MAIN_JOB_NAME"
 				if [ -d "workspace" ]; then
 					cd workspace
 					pwd

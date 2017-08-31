@@ -35,10 +35,10 @@ if [ "$#" -eq 4 ]; then
 		project_dir="$projectDir"
 		TagName="$binaryname"
 		IPA_BUILD_NUMBER="$PARENT_BUILD_NUMBER"
-		ios_binary_dir="$KONY_CI_GEN_IPA_TASK_IOS_BINARY_DIR"
-		ios_kar_orig_file_name="$KONY_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME"
-		TARGET_SDK="$KONY_CI_GEN_IPA_TASK_TARGET_SDK"
-		PKG_PLTFRM="$KONY_CI_GEN_IPA_TASK_PKG_PLTFRM"
+		ios_binary_dir="$ENGIE_CI_GEN_IPA_TASK_IOS_BINARY_DIR"
+		ios_kar_orig_file_name="$ENGIE_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME"
+		TARGET_SDK="$ENGIE_CI_GEN_IPA_TASK_TARGET_SDK"
+		PKG_PLTFRM="$ENGIE_CI_GEN_IPA_TASK_PKG_PLTFRM"
 		channels="iPhone"
 		bundlekey=""
 		echo "iPhoneBuild ::$iPhoneBuild"
@@ -46,26 +46,26 @@ if [ "$#" -eq 4 ]; then
 		
 #Condition to check if the build is either for iphone or ipad
 		if [ $iPadBuild = "true" ]; then
-			ios_binary_dir="$KONY_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR"
-			ios_kar_orig_file_name="$KONY_CI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME"
-			TARGET_SDK="$KONY_CI_GEN_IPA_IPAD_TASK_TARGET_SDK"
-			PKG_PLTFRM="$KONY_CI_GEN_IPA_IPAD_TASK_PKG_PLTFRM"
+			ios_binary_dir="$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR"
+			ios_kar_orig_file_name="$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME"
+			TARGET_SDK="$ENGIE_CI_GEN_IPA_IPAD_TASK_TARGET_SDK"
+			PKG_PLTFRM="$ENGIE_CI_GEN_IPA_IPAD_TASK_PKG_PLTFRM"
 			channels="iPad"
 			bundlekey="$ipadbundleidentifierkey"
-			#"$KONY_CI_GEN_IPA_TASK_CHANNELS"
+			#"$ENGIE_CI_GEN_IPA_TASK_CHANNELS"
 		elif [ $iPhoneBuild = "true" ]; then
-			ios_binary_dir="$KONY_CI_GEN_IPA_TASK_IOS_BINARY_DIR"
-			ios_kar_orig_file_name="$KONY_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME"
-			TARGET_SDK="$KONY_CI_GEN_IPA_TASK_TARGET_SDK"
-			PKG_PLTFRM="$KONY_CI_GEN_IPA_TASK_PKG_PLTFRM"
+			ios_binary_dir="$ENGIE_CI_GEN_IPA_TASK_IOS_BINARY_DIR"
+			ios_kar_orig_file_name="$ENGIE_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME"
+			TARGET_SDK="$ENGIE_CI_GEN_IPA_TASK_TARGET_SDK"
+			PKG_PLTFRM="$ENGIE_CI_GEN_IPA_TASK_PKG_PLTFRM"
 			channels="iPhone"
 			bundlekey="$iphonebundleidentifierkey"
 		fi
 
 #Local parameters are created and assigned with values from the property file.
 
-		mac_pwd="$KONY_CI_GEN_IPA_TASK_MAC_PWD"
-		jenkins_autofiles_dir="$KONY_CI_GEN_IPA_TASK_AUTOMATION_FILES_PATH"
+		mac_pwd="$ENGIE_CI_GEN_IPA_TASK_MAC_PWD"
+		jenkins_autofiles_dir="$ENGIE_CI_GEN_IPA_TASK_AUTOMATION_FILES_PATH"
 		xcode_updater_jar="$XCODE_CONFIG_UPDATER_JAR"
 		infoPlistConfig_file="$INFOPLIST_CONFIG_FILE"
 		xcodeConfig_file="Config.properties"
@@ -84,9 +84,9 @@ if [ "$#" -eq 4 ]; then
 #Checking for the condition whether the build is for ipad or iphone and moving the kar files to a specified location.
 
 		if [ $iPadBuild = "true" ]; then
-			mv $project_dir/$KONY_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR/$KONY_CI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.KAR $project_dir/$KONY_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR/$renamed_iphone_installer.KAR
+			mv $project_dir/$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR/$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.KAR $project_dir/$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_BINARY_DIR/$renamed_iphone_installer.KAR
 		elif [ $iPhoneBuild = "true" ]; then
-			mv $project_dir/$KONY_CI_GEN_IPA_TASK_IOS_BINARY_DIR/$KONY_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.KAR $project_dir/$KONY_CI_GEN_IPA_TASK_IOS_BINARY_DIR/$renamed_iphone_installer.KAR
+			mv $project_dir/$ENGIE_CI_GEN_IPA_TASK_IOS_BINARY_DIR/$ENGIE_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.KAR $project_dir/$ENGIE_CI_GEN_IPA_TASK_IOS_BINARY_DIR/$renamed_iphone_installer.KAR
 		fi
 
 		echo "****************** Renamed KAR file *********************"
@@ -95,7 +95,7 @@ if [ "$#" -eq 4 ]; then
 		
 #Creating the local parameters with the values from the propertyFile required for ipa generation.
 
-		Plugin_version="$KONY_CI_GEN_IPA_TASK_MAC_IOS_PLUGINS"
+		Plugin_version="$ENGIE_CI_GEN_IPA_TASK_MAC_IOS_PLUGINS"
 		echo "Plugin_version => ${Plugin_version}"
 		APP_NAME="$binaryname"
 		echo "APP_NAME => ${APP_NAME}"
@@ -104,35 +104,35 @@ if [ "$#" -eq 4 ]; then
 		echo "ipa_name => ${ipa_name}.ipa"
 		kar_name="$renamed_iphone_installer"
 		echo "kar_name => ${kar_name}.kar"
-		DIR="$KONY_CI_GEN_IPA_TASK_MAC_PLUGIN_PATH"
+		DIR="$ENGIE_CI_GEN_IPA_TASK_MAC_PLUGIN_PATH"
 		echo "DIR => ${DIR}"
-		BUILDDIR="$KONY_CI_GEN_IPA_TASK_MAC_DIR_FOR_BUILDS"
+		BUILDDIR="$ENGIE_CI_GEN_IPA_TASK_MAC_DIR_FOR_BUILDS"
 		echo "BUILDDIR => ${BUILDDIR}"
-		JENKINS_BUILD_DIR="$KONY_CI_GEN_IPA_TASK_JENKINS_BUILD_DIR"
+		JENKINS_BUILD_DIR="$ENGIE_CI_GEN_IPA_TASK_JENKINS_BUILD_DIR"
 		echo "JENKINS_BUILD_DIR => ${JENKINS_BUILD_DIR}"
-		JENKINS_OUTPUT_BINARY_DIR="$KONY_CI_GEN_IPA_TASK_JENKINS_OUTPUT_BINARY_DIR"
+		JENKINS_OUTPUT_BINARY_DIR="$ENGIE_CI_GEN_IPA_TASK_JENKINS_OUTPUT_BINARY_DIR"
 		echo "JENKINS_OUTPUT_BINARY_DIR => ${JENKINS_OUTPUT_BINARY_DIR}"
-		PROJECT_NAME="$KONY_CI_GEN_IPA_TASK_PROJECT_NAME"
+		PROJECT_NAME="$ENGIE_CI_GEN_IPA_TASK_PROJECT_NAME"
 		echo "PROJECT_NAME => ${PROJECT_NAME}"
 		echo "TARGET_SDK => ${TARGET_SDK}"
-		SCHEME="$KONY_CI_GEN_IPA_TASK_SCHEME"
+		SCHEME="$ENGIE_CI_GEN_IPA_TASK_SCHEME"
 		echo "SCHEME => ${SCHEME}"
 		DEVELOPER_NAME="$IPHONE_IOS_DEVELOPER_NAME"
 		echo "DEVELOPER_NAME => ${DEVELOPER_NAME}"
 		PRO_PROFILE_FILE="$IPHONE_IOS_PRO_PROFILE_FILE"
 		echo "PRO_PROFILE_FILE => ${PRO_PROFILE_FILE}"
-		OUTPUT_PATH="$KONY_CI_GEN_IPA_TASK_OUTPUT_PATH"
+		OUTPUT_PATH="$ENGIE_CI_GEN_IPA_TASK_OUTPUT_PATH"
 		echo "OUTPUT_PATH => ${OUTPUT_PATH}"
 		echo "PKG_PLTFRM => ${PKG_PLTFRM}"
-		KEYCHAIN="$KONY_CI_GEN_IPA_TASK_KEYCHAIN"
+		KEYCHAIN="$ENGIE_CI_GEN_IPA_TASK_KEYCHAIN"
 		echo "KEYCHAIN => ${KEYCHAIN}"
-		CODESIGN_ALLOCATE="$KONY_CI_GEN_IPA_TASK_CODESIGN_ALLOCATE"
+		CODESIGN_ALLOCATE="$ENGIE_CI_GEN_IPA_TASK_CODESIGN_ALLOCATE"
 		echo "CODESIGN_ALLOCATE => ${CODESIGN_ALLOCATE}"
-		MAC_PWD="$KONY_CI_GEN_IPA_TASK_MAC_PWD"
+		MAC_PWD="$ENGIE_CI_GEN_IPA_TASK_MAC_PWD"
 		echo "MAC_PWD => ${MAC_PWD}"
-		DEVELOPER_DIR="$KONY_CI_GEN_IPA_TASK_DEVELOPER_DIR"
+		DEVELOPER_DIR="$ENGIE_CI_GEN_IPA_TASK_DEVELOPER_DIR"
 		echo "DEVELOPER_DIR => ${DEVELOPER_DIR}"
-		RELEASE_CONF="$KONY_CI_GEN_IPA_TASK_RELEASE_CONF"
+		RELEASE_CONF="$ENGIE_CI_GEN_IPA_TASK_RELEASE_CONF"
 		echo "RELEASE_CONF => ${RELEASE_CONF}"
 		PRO_PROFILE_NAME="$IPHONE_IOS_PRO_PROFILE_NAME"
 		echo "PRO_PROFILE_NAME => ${PRO_PROFILE_NAME}"
@@ -297,7 +297,7 @@ if [ "$#" -eq 4 ]; then
 
 		echo "running perl extract command - existing one"
 
-		PERLEXTRACTCMD="perl extract.pl $(echo ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER} | tr -d '\r')/$(echo $lzldkar_name | tr -d '\r').KAR kony"
+		PERLEXTRACTCMD="perl extract.pl $(echo ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER} | tr -d '\r')/$(echo $lzldkar_name | tr -d '\r').KAR engie"
 		echo "${PERLEXTRACTCMD}"
 		$PERLEXTRACTCMD
 		echo ""
@@ -328,7 +328,7 @@ if [ "$#" -eq 4 ]; then
 		echo "CODE_SIGN_ENTITLEMENTS=$entitlements_file\r\nPROVISIONING_PROFILE=$PROVISIONING_PROFILE\r\nPROVISIONING_PROFILE[sdk\=iphoneos*]=$PROVISIONING_PROFILE\r\nCODE_SIGN_IDENTITY=$DEVELOPER_NAME\r\nCODE_SIGN_IDENTITY[sdk\=iphoneos*]=$DEVELOPER_NAME\r\nDEVELOPMENT_TEAM=$DEVELOPMENT_TEAM" >> $xcodeConfig_file
 		
 		echo "Running the xCode Automation tool to make the xCode and Info.Plist changes"
-		java -jar xCodeAutomation.jar Info.Plist_Config.json currBuildInfoPlistXml.xml XCodeCurBuildProperties.xml "$xcodeConfig_file" "$KONY_CI_GEN_IPA_TASK_XCODE_VERSION" $IOS_ENTITLEMENTS_REQUIRED "$entitlements_file" "$bundlekey"
+		java -jar xCodeAutomation.jar Info.Plist_Config.json currBuildInfoPlistXml.xml XCodeCurBuildProperties.xml "$xcodeConfig_file" "$ENGIE_CI_GEN_IPA_TASK_XCODE_VERSION" $IOS_ENTITLEMENTS_REQUIRED "$entitlements_file" "$bundlekey"
 
 		
 #Converting the .xml files of xcode project settings to project.pbxproj and Info.plist.
@@ -356,7 +356,7 @@ if [ "$#" -eq 4 ]; then
 		echo "%%%%%%%%%%%%%%%%CODE to be tested below %%%%%%%%%%%%%%%%%%"
 		#cd ${BUILDDIR}
 		cd $(echo $BUILDDIR | tr -d '\r')
-		#cd /Users/kony/Desktop/plugins/
+		#cd /Users/engie/Desktop/plugins/
 		echo "The current directory is `pwd`"
 		echo "executing rm -rf command on 'build' folder"
 		#rm -rf build
@@ -376,8 +376,8 @@ if [ "$#" -eq 4 ]; then
 		SECUNLOCKKEYCHAIN="security unlock-keychain -p $(echo $MAC_PWD | tr -d '\r') $(echo $KEYCHAIN | tr -d '\r')"
 		echo "SECUNLOCKKEYCHAIN => ${SECUNLOCKKEYCHAIN}"
 		$SECUNLOCKKEYCHAIN
-		#security -v list-keychains -d system -s /Users/kony/Library/Keychains/login.keychain
-		#security unlock-keychain -p citi /Users/kony/Library/Keychains/login.keychain
+		#security -v list-keychains -d system -s /Users/engie/Library/Keychains/login.keychain
+		#security unlock-keychain -p citi /Users/engie/Library/Keychains/login.keychain
 		echo "**********************************"
 		echo "done attempting to unlock security on keychain"
 		echo "exporting xcode path as DEVELOPER_DIR environment variable - START"
