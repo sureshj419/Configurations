@@ -1,0 +1,194 @@
+<html>
+<head>
+
+    <title>Kony OTA Installers</title>
+
+    <style type="text/css">
+
+        .test-results-header {
+
+        }
+
+        .test-result-table {
+
+            border: 1px solid black;
+            width: 500px;
+
+        }
+
+        .test-result-table-header-cell {
+
+            border-bottom: 1px solid black;
+            background-color: silver;
+
+        }
+
+        .test-result-step-command-cell {
+
+            border-bottom: 1px solid gray;
+
+        }
+
+        .test-result-step-description-cell {
+
+            border-bottom: 1px solid gray;
+
+        }
+
+        .test-result-step-result-cell-ok {
+
+            border-bottom: 1px solid gray;
+            background-color: green;
+
+        }
+
+        .test-result-step-result-cell-failure {
+
+            border-bottom: 1px solid gray;
+            background-color: red;
+
+        }
+
+        .test-result-step-result-cell-notperformed {
+
+            border-bottom: 1px solid gray;
+            background-color: white;
+
+
+        }
+
+        .test-result-describe-cell {
+            background-color: tan;
+            font-style: italic;
+        }
+
+        .test-result-step-row {
+
+        }
+
+        .test-result-comment-row {
+
+        }
+
+        .test-cast-status-box-ok {
+            border: 1px solid black;
+            float: left;
+            margin-right: 10px;
+            width: 45px;
+            height: 25px;
+            background-color: green;
+        }
+
+    </style>
+
+
+</head>
+
+
+<body>
+
+
+<h1 class="test-results-header">Kony OTA Installers</h1>
+
+
+<h2 class="test-result-name">$Project_Name</h2>
+<h3 class="test-result-name">****************************BUILD-DETAILS****************************</h3>
+<p>$Build_Details</p>
+<h3 class="test-result-name">************************************************************************</h3>
+<table class="test-result-table" cellspacing="0">
+
+    <thead>
+    <tr>
+        <td class="test-result-table-header-cell"><b>Installer</b></td>
+        <td class="test-result-table-header-cell"><b>URL</b></td>
+    </tr>
+    </thead>
+    <tbody>
+
+		<tr class="test-result-step-row test-result-step-row-altone" style="display: $iPhone_Enable;">
+			<td class="test-result-step-command-cell">iPhone</td>
+			<td class="test-result-step-command-cell"><a href="itms-services://?action=download-manifest&url=$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$iphone_plist">Click here to install</a></td>
+		</tr>
+
+		<tr class="test-result-step-row test-result-step-row-altone" style="display: $iPhoneT_Enable;">
+			<td class="test-result-step-command-cell">iPad</td>
+			<td class="test-result-step-command-cell"><a href="itms-services://?action=download-manifest&url=$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$iphoneT_plist">Click here to install</a></td>
+		</tr>
+
+		<tr class="test-result-step-row test-result-step-row-altone" style="display: $Android_Enable;">
+			<td class="test-result-step-command-cell">Android Mobile</td>
+			<td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$Android_Installer">Click here to install</a></td>
+		</tr>
+
+    <tr class="test-result-step-row test-result-step-row-altone" style="display: $AndroidT_Enable;">
+        <td class="test-result-step-command-cell">Android Tablet</td>
+        <td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$AndroidT_Installer">Click here to install</a></td>
+    </tr>
+
+    <tr class="test-result-step-row test-result-step-row-altone" style="display: $Windows8_Enable;">
+        <td class="test-result-step-command-cell">Windows 8 Mobile</td>
+        <td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$Windows8_Installer">Click here to install</a></td>
+    </tr>
+
+    <!--
+	 <tr class="test-result-step-row test-result-step-row-altone" style="display: $Windows8T_Enable;">
+        <td class="test-result-step-command-cell">Windows 8 Tab</td>
+        <td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$Windows8T_Installer">Click here to install</a></td>
+    </tr>  -->
+
+
+    <tr class="test-result-step-row test-result-step-row-altone" style="display: $Windows81_Enable;">
+        <td class="test-result-step-command-cell">Windows 8.1 Mobile</td>
+        <td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$Windows81_Installer">Click here to install</a></td>
+    </tr>
+
+
+	<!-- <tr class="test-result-step-row test-result-step-row-altone" style="display: $Windows81T_Enable;">
+        <td class="test-result-step-command-cell">Windows 8.1 Tab</td>
+        <td class="test-result-step-result-cell-notperformed"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$Windows81T_Installer">Click here to install</a></td>
+    </tr>
+	<% } %>-->
+
+    </tbody>
+
+</table>
+
+<table class="test-result-table" style="display: $iPhone_Enable;" cellspacing="0" >
+
+    <thead>
+    <tr>
+        <td class="test-result-table-header-cell"><b>iPhone Artifact</b></td>
+        <td class="test-result-table-header-cell"><b>URL</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="test-result-step-row test-result-step-row-altone" >
+        <td class="test-result-step-command-cell">iPhone KAR</td>
+        <td class="test-result-step-command-cell"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$iphone_folder_name/$iphone_kar">Click here download</a></td>
+    </tr>
+
+    </tbody>
+
+</table>
+
+<table class="test-result-table" style="display: $iPhoneT_Enable;" cellspacing="0" >
+
+    <thead>
+    <tr>
+        <td class="test-result-table-header-cell"><b>iPad Artifact</b></td>
+        <td class="test-result-table-header-cell"><b>URL</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="test-result-step-row test-result-step-row-altone" >
+        <td class="test-result-step-command-cell">iPad KAR</td>
+        <td class="test-result-step-command-cell"><a href="$ota_serv_url/$ota_sub_fldr_url/$job_name/$build_no/$iphoneT_folder_name/$iphoneT_kar">Click here download</a></td>
+    </tr>
+
+    </tbody>
+
+</table>
+
+<h5 class="test-result-name"> Please note that this information is for internal Kony use only. Our contract with Apple does not allow us to share these installers outside of the company </h5>
+</body>
+</html>
