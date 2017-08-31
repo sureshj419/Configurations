@@ -1,0 +1,257 @@
+#!/bin/sh
+###############################################################
+#                 KickStarterScript		                      #
+###############################################################
+# Purpose:
+# Purpose of this file to remove the pervious binaries on the #
+# master and trigger the Slave job based on the platform 
+# selected by user.											  #
+###############################################################
+
+# Adding the input parameter to a local parameter
+propertyFile="$1"
+
+# Condition to check if the number of parameters passed as input 
+# are correct or not
+if [ "$#" -eq 1 ]; then
+  echo "Correct number of parameters"
+  
+# Checking if the property file exists  
+  
+  if [ -f "$propertyFile" ]; then
+    echo "The property file $propertyFile found."
+
+# Read the keys and values in the property file
+
+    while IFS='=' read -r key value
+    do
+      key=$(echo $key | tr '.' '_')
+      eval "${key}='${value}'"
+    done < "$propertyFile"
+
+		echo off
+
+		echo "Executing the shell script on master"
+
+# Creating local parametes for the type of the build required.
+	
+		iosBuild=false
+		andBuild=false
+		winBuild=false
+		
+# Read the property file and check for which platforms to be build and correspondingly making the 
+# particular parameters defined above as either true or false.
+
+		if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ] || [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
+			iosBuild=true
+		fi
+		if [ $BUILD_FOR_ANDROID_RC_CLIENT = "true" ] || [ $BUILD_FOR_ANDROID_TAB_RC_CLIENT = "true" ]; then
+		andBuild=true
+		fi
+		if [ $BUILD_FOR_WINDOWS8_RC_CLIENT = "true" ] || [ $BUILD_FOR_WINDOWS81_RC_CLIENT = "true" ] || [ $BUILD_FOR_WINDOWS10_RC_CLIENT = "true" ] || [ $BUILD_FOR_WINDOWS81_TAB_RC_CLIENT = "true" ] || [ $BUILD_FOR_WINDOWS10_TAB_RC_CLIENT = "true" ]; then
+			winBuild=true
+		fi
+
+		echo " iosBuild ::"$iosBuild
+		echo " andBuild ::"$andBuild
+		echo " winBuild ::"$winBuild
+		
+		executePipeline=false   # executePipeline -- to check if more than one platform build is needed and it is made true or false
+		KONY_MACHINE_LABEL=ios  # KONY_MACHINE_LABEL is defined to trigger the build either on win_slave or mac_slave.
+
+		echo "KONY_MACHINE_LABEL before is "$KONY_MACHINE_LABEL
+
+		if [ $iosBuild = true ] && [ $winBuild = true ]; then
+			executePipeline=true
+		else 
+			if [ $iosBuild = true ]; then
+				KONY_MACHINE_LABEL=ios
+			else 
+				KONY_MACHINE_LABEL=windows
+			fi
+			
+		fi
+		if [ $KONY_MACHINE_LABEL = "windows" ]; then
+			echo "Machine label is windows"
+			if [ $winBuild = false ] && [ $andBuild = true ]; then
+				echo "Checking if Windows job exists"
+				if [[ ! -z $KONY_WIN_SLAVE_INIT_JOB_NAME ]];then
+					echo "Windows job exists. Redirecting android build to Win Slave"
+				else
+					echo "Windows job does not exists. Redirecting android build to Mac Slave"
+					KONY_MACHINE_LABEL=ios
+				fi
+			fi
+		else 
+			echo "Machine label is ios"
+		fi
+		echo "executePipeline is "${executePipeline}
+		echo "KONY_MACHINE_LABEL after is "$KONY_MACHINE_LABEL
+		
+		workspaceNew=`echo $WORKSPACE`
+		echo "workspaceNew is ::"$workspaceNew
+		
+		# Re-writing the property files based on the platfomrs.
+		# If the job is triggered in Mac Slave/ Win Slave. The Slave specific properties are re-written in the file.
+		# If the job is triggered in Mac Slave and Win Slave. Two property files will created with Slave specific properties.
+
+		newCommonPropertyFileName=`echo ${appidkey}_Config.properties`
+		echo "newCommonPropertyFileName ::  $newCommonPropertyFileName"
+
+		macPropertyFileName=`echo ${appidkey}_Config_Mac.properties`
+		echo "macPropertyFileName ::  $macPropertyFileName"
+
+		winPropertyFileName=`echo ${appidkey}_Config_Win.properties`
+		echo "winPropertyFileName ::  $winPropertyFileName"
+		
+		common_config_file_path="C:/kony/PropertiesFiles/ci_config"
+		
+		echo "common_config_file_path ::  $common_config_file_path"
+		
+		if [ -d $common_config_file_path ]; then
+			
+			if [ -f "$WORKSPACE/ci_config"/${appidkey}_Config.properties ]; then
+				cp "$WORKSPACE/ci_config"/${appidkey}_Config.properties $common_config_file_path
+				echo "Copying property file successfull"
+			fi
+			
+			if [ -f "$WORKSPACE/ci_config"/DeviceFarmCLI.properties ]; then
+				cp "$WORKSPACE/ci_config"/DeviceFarmCLI.properties $common_config_file_path
+				echo "Copying DeviceFarmCLI file successfull"
+			fi
+
+			if [ -f "$WORKSPACE/ci_config"/${appidkey}.keystore ]; then
+				cp "$WORKSPACE/ci_config"/${appidkey}.keystore $common_config_file_path/ScriptUtils
+				echo "Copying keystore file successfull"
+			fi
+			
+			if [ -f "$WORKSPACE/ci_config"/projectprop.xml ]; then
+				cp "$WORKSPACE/ci_config"/projectprop.xml $common_config_file_path/ScriptUtils/Prop/projectprop.xml
+				echo "Copying projectprop file successfull"
+			fi
+			
+			if [ -f "$WORKSPACE/ci_config"/Info.Plist_Config.json ]; then
+				cp "$WORKSPACE/ci_config"/Info.Plist_Config.json $common_config_file_path/ScriptUtils/xcode_configs/Info.Plist_Config.json
+				echo "Copying xcode_configs Plist_Config file successfull"
+			fi
+			
+			cd "$workspaceNew"
+			echo "Removing the old config folder in worksapce"
+			rm -rf ci_config
+			echo "trying to copy the common ci_config to workspace"
+			cp -R "$common_config_file_path" "$WORKSPACE/ci_config"
+			echo "Copy the common ci_config to workspace is completed"
+		fi
+		  
+		cd "$workspaceNew/ci_config"
+
+		pwd
+
+		if [ "$executePipeline" = "true" ]; then
+			
+		 cp $newCommonPropertyFileName $macPropertyFileName
+		 cp $newCommonPropertyFileName $winPropertyFileName
+		# rm -rf $newCommonPropertyFileName 
+		 
+		fi
+		echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $newCommonPropertyFileName
+
+		ws_loc=`printenv MAC_workspace.location`
+		eclipse_loc=`printenv MAC_eclipse.equinox.path`
+		imgMagic_home=`printenv MAC_imagemagic.home`
+		and_home=`printenv MAC_android.home`
+
+		if [ "$executePipeline" = "true" ]; then
+			ws_loc=`printenv MAC_workspace.location`
+			eclipse_loc=`printenv MAC_eclipse.equinox.path`
+			imgMagic_home=`printenv MAC_imagemagic.home`
+			and_home=`printenv MAC_android.home`
+			KONY_MACHINE_LABEL=ios
+			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${MAC_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$MAC_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${MAC_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${MAC_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${MAC_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${MAC_KONY_WORKSPACE_SUB_FOLDER}" >> $macPropertyFileName
+			echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $macPropertyFileName	
+			
+			ws_loc=`printenv WIN_workspace.location`
+			eclipse_loc=`printenv WIN_eclipse.equinox.path`
+			imgMagic_home=`printenv WIN_imagemagic.home`
+			and_home=`printenv WIN_android.home`
+			KONY_MACHINE_LABEL=windows
+			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${WIN_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$WIN_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${WIN_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${WIN_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${WIN_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${WIN_KONY_WORKSPACE_SUB_FOLDER}" >> $winPropertyFileName
+			echo -e "\r\nexecutePipeline=$executePipeline\r\nKONY_MACHINE_LABEL=$KONY_MACHINE_LABEL" >> $winPropertyFileName
+		else 
+
+			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
+				ws_loc=`printenv MAC_workspace.location`
+				eclipse_loc=`printenv MAC_eclipse.equinox.path`
+				imgMagic_home=`printenv MAC_imagemagic.home`
+				and_home=`printenv MAC_android.home`
+			else
+				ws_loc=`printenv WIN_workspace.location`
+				eclipse_loc=`printenv WIN_eclipse.equinox.path`
+				imgMagic_home=`printenv WIN_imagemagic.home`
+				and_home=`printenv WIN_android.home`
+			fi    
+
+			echo "${ws_loc}"
+			echo "${eclipse_loc}"
+			echo "${imgMagic_home}"
+			echo "${and_home}"
+
+			echo -e "\r\nworkspace.location=${ws_loc}\r\neclipse.equinox.path=${eclipse_loc}\r\nimagemagic.home=${imgMagic_home}\r\nandroid.home=${and_home}" >> $newCommonPropertyFileName
+			
+			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
+				echo -e "\r\nJENKINS_BASE_HOME=${MAC_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${MAC_CONFIG_FILE}\r\nECLIPSE_LOCATION=${MAC_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${MAC_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${MAC_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${MAC_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$MAC_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${MAC_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${MAC_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${MAC_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${MAC_KONY_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
+			else
+				echo -e "\r\nJENKINS_BASE_HOME=${WIN_JENKINS_BASE_HOME}\r\nCONFIG_FILE=${WIN_CONFIG_FILE}\r\nECLIPSE_LOCATION=${WIN_ECLIPSE_LOCATION}\r\nSTORAGE_LOCATION=${WIN_STORAGE_LOCATION}\r\nPLUGIN_PROPERTIES_FILE=${WIN_PLUGIN_PROPERTIES_FILE}\r\nKONY_PLUGIN_CONFIG_FILES=${WIN_KONY_PLUGIN_CONFIG_FILES}\r\nKONY_PROPERTIES_ROOT_DIRECTORY=$WIN_KONY_PROPERTIES_ROOT_DIRECTORY\r\nKONY_CI_SCRIPTS_DIR=${WIN_KONY_CI_SCRIPTS_DIR}\r\nKONY_CI_PROPS_DIR=${WIN_KONY_CI_PROPS_DIR}\r\nKONY_OTA_TEMP_DIR=${WIN_KONY_OTA_TEMP_DIR}\r\nKONY_WORKSPACE_SUB_FOLDER=${WIN_KONY_WORKSPACE_SUB_FOLDER}" >> $newCommonPropertyFileName
+			fi
+			
+		fi
+		
+		# Deleting the existing property/zip files and Creating a zip file with updated properties.
+		 rm -rf $JOB_NAME.tar.gz
+		 
+		 tar -zcvf $JOB_NAME.tar.gz *
+		 
+		## DELETING BINARIES FOLDERS IN MASTER 
+		if [ "$executePipeline" = "true" ]; then
+			echo "executePipeline is true deleting both workspace binaries in ::$KONY_WIN_SLAVE_MAIN_JOB_NAME :: and ::$KONY_MAC_SLAVE_MAIN_JOB_NAME jobs"
+				cd "$JENKINS_HOME/jobs/$KONY_WIN_SLAVE_MAIN_JOB_NAME"
+				if [ -d "workspace" ]; then
+					cd workspace
+					pwd
+					ls
+					rm -rf binaries
+				fi
+
+				cd "$JENKINS_HOME/jobs/$KONY_MAC_SLAVE_MAIN_JOB_NAME"
+				if [ -d "workspace" ]; then
+					cd workspace
+					pwd
+					ls
+					rm -rf binaries
+				fi
+		else 
+			echo "executePipeline is false and KONY_MACHINE_LABEL is ::$KONY_MACHINE_LABEL"
+			if [ "$KONY_MACHINE_LABEL" = "ios" ]; then
+				cd "$JENKINS_HOME/jobs/$KONY_MAC_SLAVE_MAIN_JOB_NAME"
+				if [ -d "workspace" ]; then
+					cd workspace
+					pwd
+					ls
+					rm -rf binaries
+				fi
+			else
+				cd "$JENKINS_HOME/jobs/$KONY_WIN_SLAVE_MAIN_JOB_NAME"
+				if [ -d "workspace" ]; then
+					cd workspace
+					pwd
+					ls
+					rm -rf binaries
+				fi
+			fi    	
+		fi
+  else
+    echo "The property file $propertyFile not found."
+  fi
+else
+  echo "Wrong number of parameters!!"
+fi

@@ -1,0 +1,36 @@
+{ 
+	"infoplist": 
+		[
+			{
+				"key": "ShouldReturnOldDeviceInfo",
+				"value": "true",
+				"type": "boolean",
+				"action": "add"
+			},
+			{
+				"key": "CFBundleVersion",
+				"value": "6.12",
+				"type": "string",
+				"action": "update"
+			},
+			{
+				"key": "CFBundleShortVersionString",
+				"value": "6.12",
+				"type": "string",
+				"action": "update"
+			},
+			{
+				"key": "UILaunchImages",
+				"value": [],
+				"type": "array",
+				"action": "delete"
+			}
+			{
+				"key": "NSLocationWhenInUseUsageDescription",
+				"value": "Your current location may be used to search for ATMs, Citi(r) branch offices and personalized offers near you.",
+				"type": "string",
+				"action": "add"
+			}
+			
+		]
+}
