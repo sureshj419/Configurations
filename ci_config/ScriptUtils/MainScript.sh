@@ -86,7 +86,7 @@ if [ "$#" -eq 6 ]; then
 
 		cd ${ws_loc}
 
-		aws s3 cp s3://kony-ci0001-storage1/libraries/kony-appfactory-libraries/PluginUpgrade.jar .
+		#aws s3 cp s3://kony-ci0001-storage1/libraries/kony-appfactory-libraries/PluginUpgrade.jar .
 		#cp $ENGIE_PLUGIN_CONFIG_FILES/konyplugins.xml ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
 
 		#Updating the kony plugins based on the plugins defined for respective project.
@@ -136,18 +136,18 @@ if [ "$#" -eq 6 ]; then
 		fi
 		#Path settings for mac slave
 		if [ "$ENGIE_MACHINE_LABEL" == "ios" ]; then
-		    export ANT_HOME=/Jenkins/KonyVisualizerEnterprise7.1.0/Ant
+		    export ANT_HOME=/Applications/KonyVisualizerEnterprise7.3.0/Ant
 		    echo "Printing Ant Home :: "$ANT_HOME
-		    export GRADLE_HOME=/Jenkins/KonyVisualizerEnterprise7.1.0/gradle
+		    export GRADLE_HOME=/Applications/KonyVisualizerEnterprise7.3.0/gradle
 		    echo "Printing GRADLE_HOME :: "$GRADLE_HOME
-			cd /Jenkins/KonyVisualizerEnterprise7.1.0
+			cd /Applications/KonyVisualizerEnterprise7.3.0
 			rm -rf gradle
 			if [[ $pluginversion -lt $baseversion ]]; then
 				cp -R gradleOLD gradle
-				export JAVA_HOME=/Jenkins/KonyVisualizerEnterprise7.1.0/jdk1.7.0_79.jdk/Contents/Home
+				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.7.0_79.jdk/Contents/Home
 			else
 				cp -R gradle-2.14.1 gradle
-				export JAVA_HOME=/Jenkins/KonyVisualizerEnterprise7.1.0/jdk1.8.0_112.jdk/Contents/Home
+				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
 			fi
 		    echo "Printing JAVA_HOME :: "$JAVA_HOME
 		    export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
