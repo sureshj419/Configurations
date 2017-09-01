@@ -144,7 +144,7 @@ if [ "$#" -eq 6 ]; then
 			rm -rf gradle
 			if [[ $pluginversion -lt $baseversion ]]; then
 				cp -R gradleOLD gradle
-				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.7.0_79.jdk/Contents/Home
+				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
 			else
 				cp -R gradle-2.14.1 gradle
 				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
