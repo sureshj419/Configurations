@@ -87,7 +87,7 @@ if [ "$#" -eq 6 ]; then
 		cd ${ws_loc}
 
 		#aws s3 cp s3://kony-ci0001-storage1/libraries/kony-appfactory-libraries/PluginUpgrade.jar .
-		#cp $ENGIE_PLUGIN_CONFIG_FILES/konyplugins.xml ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
+		cp $ENGIE_PLUGIN_CONFIG_FILES/PluginUpgrade.jar ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
 
 		#Updating the kony plugins based on the plugins defined for respective project.
 		#Write the status and visualizer version details in a file.
@@ -121,10 +121,11 @@ if [ "$#" -eq 6 ]; then
 
 		#Comparing the plugin version with the base version 7.2.1 and use gradle 2.14.1 with java 8 for the 
 		#versions grater or equel to base version.
+		###TOCHANGE###
 		baseversion="721"
 		echo "Plugins version is :::: $PLUGINS_VERSION"
 		pluginversion=`echo "${PLUGINS_VERSION//.}"`
-		
+		###TOCHANGE###
 		#Path settings for windows slave
 		if [ "$ENGIE_MACHINE_LABEL" = "windows" ]; then
 			export HOME=C:\cygwin64\bin\bash
