@@ -183,7 +183,7 @@ if [ "$#" -eq 4 ]; then
 				echo "Files in the folder"
 				ls
 				echo "Deleting files in the folder"
-				rm *
+				rm -rf *
 				echo "Clean completed"
 
 #Modifying and copying the plugins folder.		
@@ -193,7 +193,7 @@ if [ "$#" -eq 4 ]; then
 			echo "Copying the ios plugin to folder completed"
 			
 			cd ${DIR}
-			
+			echo "PWD --> ${DIR}"
 			
 #Moving .jar file to plugin.zip file and Unzipping of the plugin jar
 			mv com.kony.ios_*.jar plugin.zip

@@ -141,14 +141,15 @@ if [ "$#" -eq 6 ]; then
 		    export GRADLE_HOME=/Applications/KonyVisualizerEnterprise7.3.0/gradle
 		    echo "Printing GRADLE_HOME :: "$GRADLE_HOME
 			cd /Applications/KonyVisualizerEnterprise7.3.0
-			rm -rf gradle
-			if [[ $pluginversion -lt $baseversion ]]; then
-				cp -R gradleOLD gradle
-				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
-			else
-				cp -R gradle-2.14.1 gradle
-				export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
-			fi
+			#rm -rf gradle
+			#if [[ $pluginversion -lt $baseversion ]]; then
+			#	cp -R gradleOLD gradle
+			#	export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
+			#else
+			#	cp -R gradle-2.14.1 gradle
+			#	export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
+			#fi
+			export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
 		    echo "Printing JAVA_HOME :: "$JAVA_HOME
 		    export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		    echo "Printing path ::"$PATH
