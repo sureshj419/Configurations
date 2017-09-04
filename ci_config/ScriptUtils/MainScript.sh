@@ -87,7 +87,7 @@ if [ "$#" -eq 6 ]; then
 		cd ${ws_loc}
 
 		#aws s3 cp s3://kony-ci0001-storage1/libraries/kony-appfactory-libraries/PluginUpgrade.jar .
-		cp $ENGIE_PLUGIN_CONFIG_FILES/PluginUpgrade.jar ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
+		cp $ENGIE_PLUGIN_CONFIG_FILES/PluginUpgrade.jar ${ws_loc}
 
 		#Updating the kony plugins based on the plugins defined for respective project.
 		#Write the status and visualizer version details in a file.
