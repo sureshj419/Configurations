@@ -8,7 +8,7 @@
 ###############################################################
 if [ $ENGIE_MACHINE_LABEL == windows ]
 then
-	export HOME=C:\cygwin64\bin\bash
+	export HOME=D:\cygwin64\bin\bash
     export PATH=$PATH:/usr/bin
 fi
 
