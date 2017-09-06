@@ -297,7 +297,7 @@ if [ "$#" -eq 4 ]; then
 
 		echo "running perl extract command - existing one"
 
-		PERLEXTRACTCMD="perl extract.pl $(echo ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER} | tr -d '\r')/$(echo $lzldkar_name | tr -d '\r').KAR engie"
+		PERLEXTRACTCMD="perl extract.pl $(echo ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER} | tr -d '\r')/$(echo $lzldkar_name | tr -d '\r').KAR KCI"
 		echo "${PERLEXTRACTCMD}"
 		$PERLEXTRACTCMD
 		echo ""
@@ -356,7 +356,7 @@ if [ "$#" -eq 4 ]; then
 		echo "%%%%%%%%%%%%%%%%CODE to be tested below %%%%%%%%%%%%%%%%%%"
 		#cd ${BUILDDIR}
 		cd $(echo $BUILDDIR | tr -d '\r')
-		#cd /Users/engie/Desktop/plugins/
+		#cd /Users/KCI/Desktop/plugins/
 		echo "The current directory is `pwd`"
 		echo "executing rm -rf command on 'build' folder"
 		#rm -rf build
@@ -376,8 +376,8 @@ if [ "$#" -eq 4 ]; then
 		SECUNLOCKKEYCHAIN="security unlock-keychain -p $(echo $MAC_PWD | tr -d '\r') $(echo $KEYCHAIN | tr -d '\r')"
 		echo "SECUNLOCKKEYCHAIN => ${SECUNLOCKKEYCHAIN}"
 		$SECUNLOCKKEYCHAIN
-		#security -v list-keychains -d system -s /Users/engie/Library/Keychains/login.keychain
-		#security unlock-keychain -p citi /Users/engie/Library/Keychains/login.keychain
+		#security -v list-keychains -d system -s /Users/KCI/Library/Keychains/login.keychain
+		#security unlock-keychain -p citi /Users/KCI/Library/Keychains/login.keychain
 		echo "**********************************"
 		echo "done attempting to unlock security on keychain"
 		echo "exporting xcode path as DEVELOPER_DIR environment variable - START"
