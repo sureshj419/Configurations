@@ -122,16 +122,16 @@ if [ "$#" -eq 6 ]; then
 		#Comparing the plugin version with the base version 7.2.1 and use gradle 2.14.1 with java 8 for the 
 		#versions grater or equel to base version.
 		###TOCHANGE###
-		baseversion="721"
+		baseversion="730"
 		echo "Plugins version is :::: $PLUGINS_VERSION"
 		pluginversion=`echo "${PLUGINS_VERSION//.}"`
 		###TOCHANGE###
 		#Path settings for windows slave
 		if [ "$ENGIE_MACHINE_LABEL" = "windows" ]; then
-			export HOME=C:\cygwin64\bin\bash
-			export JAVA_HOME=/cygdrive/c/KonyVisualizerEnterprise7.0.0/Java/jdk1.7.0_67
+			export HOME=D:/cygwin64/bin/bash
+			export JAVA_HOME=/cygdrive/d/KonyVisualizerEnterprise7.3.0/Java/jdk1.8.0_112
 			echo "Printing JAVA_HOME :: "$JAVA_HOME
-			export GRADLE_HOME=C:/KonyVisualizerEnterprise7.0.0/gradle
+			export GRADLE_HOME=D:/KonyVisualizerEnterprise7.3.0/gradle
 			echo "Printing GRADLE_HOME :: "$GRADLE_HOME
 			export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		fi
