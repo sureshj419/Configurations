@@ -128,20 +128,20 @@ if [ "$#" -eq 6 ]; then
 		###TOCHANGE###
 		#Path settings for windows slave
 		if [ "$KCI_MACHINE_LABEL" = "windows" ]; then
-			export HOME=D:/cygwin64/bin/bash
-			export JAVA_HOME=/cygdrive/d/KonyVisualizerEnterprise7.3.0/Java/jdk1.8.0_112
+			export HOME=$WIN_CYGWIN_HOME/bin/bash
+			export JAVA_HOME=$WIN_JAVA_HOME
 			echo "Printing JAVA_HOME :: "$JAVA_HOME
-			export GRADLE_HOME=D:/KonyVisualizerEnterprise7.3.0/gradle
+			export GRADLE_HOME=$WIN_GRADLE_HOME
 			echo "Printing GRADLE_HOME :: "$GRADLE_HOME
 			export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		fi
 		#Path settings for mac slave
 		if [ "$KCI_MACHINE_LABEL" == "ios" ]; then
-		    export ANT_HOME=/Applications/KonyVisualizerEnterprise7.3.0/Ant
+		    export ANT_HOME=$MAC_ANT_HOME
 		    echo "Printing Ant Home :: "$ANT_HOME
-		    export GRADLE_HOME=/Applications/KonyVisualizerEnterprise7.3.0/gradle
+		    export GRADLE_HOME=$MAC_GRADLE_HOME
 		    echo "Printing GRADLE_HOME :: "$GRADLE_HOME
-			cd /Applications/KonyVisualizerEnterprise7.3.0
+			#cd /Applications/KonyVisualizerEnterprise7.3.0
 			#rm -rf gradle
 			#if [[ $pluginversion -lt $baseversion ]]; then
 			#	cp -R gradleOLD gradle
@@ -150,7 +150,7 @@ if [ "$#" -eq 6 ]; then
 			#	cp -R gradle-2.14.1 gradle
 			#	export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
 			#fi
-			export JAVA_HOME=/Applications/KonyVisualizerEnterprise7.3.0/jdk1.8.0_112.jdk/Contents/Home
+			export JAVA_HOME=$MAC_JAVA_HOME
 		    echo "Printing JAVA_HOME :: "$JAVA_HOME
 		    export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		    echo "Printing path ::"$PATH

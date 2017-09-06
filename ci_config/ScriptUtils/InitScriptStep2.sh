@@ -8,7 +8,7 @@
 ###############################################################
 if [ $KCI_MACHINE_LABEL == windows ]
 then
-	export HOME=D:\cygwin64\bin\bash
+	export HOME=$WIN_CYGWIN_HOME\bin\bash
     export PATH=$PATH:/usr/bin
 fi
 
