@@ -6,7 +6,7 @@
 # Purpose of this file is to remove the pervious binaries on the #
 # slave and trigger the MAIN_job on the slave
 ###############################################################
-if [ $ENGIE_MACHINE_LABEL == windows ]
+if [ $KCI_MACHINE_LABEL == windows ]
 then
 	export HOME=D:\cygwin64\bin\bash
     export PATH=$PATH:/usr/bin
@@ -42,32 +42,32 @@ if [ "$#" -eq 1 ]; then
 
 	pwd 
 	
-	if [ $ENGIE_MACHINE_LABEL == windows ]; then
+	if [ $KCI_MACHINE_LABEL == windows ]; then
 		
-		if [ -d "$ENGIE_WIN_SLAVE_MAIN_JOB_NAME" ]; then
-			cd "$ENGIE_WIN_SLAVE_MAIN_JOB_NAME"
+		if [ -d "$KCI_WIN_SLAVE_MAIN_JOB_NAME" ]; then
+			cd "$KCI_WIN_SLAVE_MAIN_JOB_NAME"
 			pwd
 			echo "REMOVING WORKSPACE FOLDER"
 			rm -rf "workspace"
 			echo "DONE"
 		else 	
 			echo "Job executing for the first time. Creating main job folder"
-			mkdir "$ENGIE_WIN_SLAVE_MAIN_JOB_NAME"
-			cd "$ENGIE_WIN_SLAVE_MAIN_JOB_NAME"
+			mkdir "$KCI_WIN_SLAVE_MAIN_JOB_NAME"
+			cd "$KCI_WIN_SLAVE_MAIN_JOB_NAME"
 			pwd
 		fi
 	else 
 		
-		if [ -d "$ENGIE_MAC_SLAVE_MAIN_JOB_NAME" ]; then
-			cd "$ENGIE_MAC_SLAVE_MAIN_JOB_NAME"
+		if [ -d "$KCI_MAC_SLAVE_MAIN_JOB_NAME" ]; then
+			cd "$KCI_MAC_SLAVE_MAIN_JOB_NAME"
 			pwd
 			echo "REMOVING WORKSPACE FOLDER"
 			rm -rf "workspace"
 			echo "DONE"
 		else 	
 			echo "Job executing for the first time. Creating main job folder"
-			mkdir "$ENGIE_MAC_SLAVE_MAIN_JOB_NAME"
-			cd "$ENGIE_MAC_SLAVE_MAIN_JOB_NAME"
+			mkdir "$KCI_MAC_SLAVE_MAIN_JOB_NAME"
+			cd "$KCI_MAC_SLAVE_MAIN_JOB_NAME"
 			pwd
 		fi
 	fi
@@ -78,8 +78,8 @@ if [ "$#" -eq 1 ]; then
 	
 	cd "workspace"
 	
-	echo "Creating $ENGIE_UI_LOCAL_MODULE_DIR FOLDER"
-	mkdir $ENGIE_UI_LOCAL_MODULE_DIR
+	echo "Creating $KCI_UI_LOCAL_MODULE_DIR FOLDER"
+	mkdir $KCI_UI_LOCAL_MODULE_DIR
 	echo "DONE"
 
 	echo "PRE BUILD ACTIVITIES - REMOVE BINARIES FOLDER - END"

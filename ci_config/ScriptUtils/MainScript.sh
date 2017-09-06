@@ -35,8 +35,8 @@ if [ "$#" -eq 6 ]; then
 
     echo "MAC_workspace.location::${MAC_workspace_location}"
     echo "WIN_workspace.location::${WIN_workspace_location}"
-    echo "ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE:: ${ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE}"
-    echo "ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE_NAME:: ${ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE_NAME}"
+    echo "KCI_GEN_IPA_TASK_PRO_PROFILE:: ${KCI_GEN_IPA_TASK_PRO_PROFILE}"
+    echo "KCI_GEN_IPA_TASK_PRO_PROFILE_NAME:: ${KCI_GEN_IPA_TASK_PRO_PROFILE_NAME}"
 
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - COPY NECESSARY FILES - START"
@@ -57,7 +57,7 @@ if [ "$#" -eq 6 ]; then
 		echo "android_home ::$android_home"
 		
 		rm HeadlessBuild-Global.properties
-		if [ "$ENGIE_MACHINE_LABEL" = "windows" ]; then
+		if [ "$KCI_MACHINE_LABEL" = "windows" ]; then
 			finalString=$(echo ${ws_loc} | sed 's/\\/\//g')
 			echo $finalString
 			echo "workspace.location=$finalString" >> HeadlessBuild-Global.properties
@@ -69,14 +69,14 @@ if [ "$#" -eq 6 ]; then
 		echo "imagemagic.home=${imagemagic_home}" >> HeadlessBuild-Global.properties
 		echo "android.home=${android_home}" >> HeadlessBuild-Global.properties
 
-		#cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_GLBL_PROP .
-		#cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_TAG_CODE_REVIEW .
-		cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_ANT_CTRB .
+		#cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_GLBL_PROP .
+		#cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_TAG_CODE_REVIEW .
+		cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_ANT_CTRB .
 
-		cd ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
-		cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_BLD_PROP .
-		cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_PRJ_PROP_XML .
-		#cp $JENKINS_BASE_HOME/$ENGIE_CI_PROPS_DIR/$ENGIE_CI_PRJ_PROP_XML .
+		cd ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR
+		cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_BLD_PROP .
+		cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_PRJ_PROP_XML .
+		#cp $JENKINS_BASE_HOME/$KCI_PROPS_DIR/$KCI_PRJ_PROP_XML .
 
 		echo "PRE BUILD ACTIVITIES - COPY NECESSARY FILES - END"
 		echo "************************************************************"
@@ -87,11 +87,11 @@ if [ "$#" -eq 6 ]; then
 		cd ${ws_loc}
 
 		#aws s3 cp s3://kony-ci0001-storage1/libraries/kony-appfactory-libraries/PluginUpgrade.jar .
-		cp $ENGIE_PLUGIN_CONFIG_FILES/PluginUpgrade.jar ${ws_loc}
+		cp $KCI_PLUGIN_CONFIG_FILES/PluginUpgrade.jar ${ws_loc}
 
 		#Updating the kony plugins based on the plugins defined for respective project.
 		#Write the status and visualizer version details in a file.
-		java -jar ${ws_loc}/PluginUpgrade.jar ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/konyplugins.xml $STORAGE_LOCATION $DOWNLOAD_URL $STORAGE_URL $fromStorageURL $PLUGINS_FOLDER $ECLIPSE_LOCATION $PLUGIN_PROPERTIES_FILE
+		java -jar ${ws_loc}/PluginUpgrade.jar ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/konyplugins.xml $STORAGE_LOCATION $DOWNLOAD_URL $STORAGE_URL $fromStorageURL $PLUGINS_FOLDER $ECLIPSE_LOCATION $PLUGIN_PROPERTIES_FILE
 
 		pluginPropertyFile="${PLUGIN_PROPERTIES_FILE}/PLUGIN_DEPENDENCY_STATUS.properties"
 		
@@ -127,7 +127,7 @@ if [ "$#" -eq 6 ]; then
 		pluginversion=`echo "${PLUGINS_VERSION//.}"`
 		###TOCHANGE###
 		#Path settings for windows slave
-		if [ "$ENGIE_MACHINE_LABEL" = "windows" ]; then
+		if [ "$KCI_MACHINE_LABEL" = "windows" ]; then
 			export HOME=D:/cygwin64/bin/bash
 			export JAVA_HOME=/cygdrive/d/KonyVisualizerEnterprise7.3.0/Java/jdk1.8.0_112
 			echo "Printing JAVA_HOME :: "$JAVA_HOME
@@ -136,7 +136,7 @@ if [ "$#" -eq 6 ]; then
 			export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		fi
 		#Path settings for mac slave
-		if [ "$ENGIE_MACHINE_LABEL" == "ios" ]; then
+		if [ "$KCI_MACHINE_LABEL" == "ios" ]; then
 		    export ANT_HOME=/Applications/KonyVisualizerEnterprise7.3.0/Ant
 		    echo "Printing Ant Home :: "$ANT_HOME
 		    export GRADLE_HOME=/Applications/KonyVisualizerEnterprise7.3.0/gradle
@@ -164,60 +164,60 @@ if [ "$#" -eq 6 ]; then
 
 		CONFIG_FILE=$propertyFile
 
-		cd $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR
+		cd $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR
 		
 		# Modifying the HeadlessBuild.properties , HeadlessBuild-Global.properties,
 		# projectprop.xml files according to the given parameter values in property file using JAVA
 
-		#java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_CI_GLBL_PROP workspace.location false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_GLBL_PROP workspace.location false
 
-		#java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_CI_GLBL_PROP eclipse.equinox.path false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_GLBL_PROP eclipse.equinox.path false
 
-		#java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_CI_GLBL_PROP imagemagic.home false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_GLBL_PROP imagemagic.home false
 
-		#java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_CI_GLBL_PROP android.home false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_GLBL_PROP android.home false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP appid false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP appid false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP version false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP version false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP android.packagename false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP android.packagename false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP middleware_server_ip false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_server_ip false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP middleware_https_port false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_https_port false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP middleware_web_context false
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_web_context false
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP build_mode true
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP build_mode true
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_PROP $ENGIE_CI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP remove_print_statements true
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP remove_print_statements true
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE appnamekey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML appnamekey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE appnamekey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML appnamekey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE iphonebundleidentifierkey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML iphonebundleidentifierkey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE iphonebundleidentifierkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML iphonebundleidentifierkey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE mwaddrkey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML mwaddrkey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE mwaddrkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML mwaddrkey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE appidkey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML appidkey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE appidkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML appidkey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE appversionkey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML appversionkey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE appversionkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML appversionkey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE appversioncode ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML appversioncode
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE appversioncode ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML appversioncode
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE iphonebundleversionkey ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML iphonebundleversionkey
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE iphonebundleversionkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML iphonebundleversionkey
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE build ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML build
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE build ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML build
 
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE removeprintstatements ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML removeprintstatements
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE removeprintstatements ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML removeprintstatements
 		
-		java -jar $ENGIE_CI_UPDATEPROPS_JAR $ENGIE_CI_UPDATE_XML $ENGIE_CI_UPDATE_PROJPROPXML $CONFIG_FILE androidmapkey2 ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_PRJ_PROP_XML androidmapkey2
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE androidmapkey2 ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML androidmapkey2
 
-		echo "ENGIE_CI_UPDATE_HEADLESSBUILD_JAR ::"$ENGIE_CI_UPDATE_HEADLESSBUILD_JAR
+		echo "KCI_UPDATE_HEADLESSBUILD_JAR ::"$KCI_UPDATE_HEADLESSBUILD_JAR
 		echo "CONFIG_FILE ::"$CONFIG_FILE
-		echo "ENGIE_CI_BLD_PROP ::"${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP
+		echo "KCI_BLD_PROP ::"${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP
 
-		java -jar $ENGIE_CI_UPDATE_HEADLESSBUILD_JAR $CONFIG_FILE ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_BLD_PROP $EXECUTE_PIPELINE $BuildMachineOS $ANDROID_TARGET_SLAVE_IN_PIPELINE $CLOUD_USERNAME $CLOUD_PASSWORD
+		java -jar $KCI_UPDATE_HEADLESSBUILD_JAR $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP $EXECUTE_PIPELINE $BuildMachineOS $ANDROID_TARGET_SLAVE_IN_PIPELINE $CLOUD_USERNAME $CLOUD_PASSWORD
 
 		echo "PRE BUILD ACTIVITIES - UPDATE GLOBAL PROPERTIES WITH ACTUAL VALUES - END"
 		echo "************************************************************"
@@ -225,11 +225,11 @@ if [ "$#" -eq 6 ]; then
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - START"
 
-		echo "ENGIE_UI_LOCAL_MODULE_DIR ::$ENGIE_UI_LOCAL_MODULE_DIR"
+		echo "KCI_UI_LOCAL_MODULE_DIR ::$KCI_UI_LOCAL_MODULE_DIR"
 
-		cd ${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR
+		cd ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR
 		pwd
-		$ENGIE_CI_ANT_CMD #command "ant" is given to trigger the build.
+		$KCI_ANT_CMD #command "ant" is given to trigger the build.
 		
 
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - END"
@@ -237,13 +237,13 @@ if [ "$#" -eq 6 ]; then
 		
 		echo "************************************************************"
 		echo "POST BUILD ACTIVITY - CODE SIGN AND GENERATE IPA - START"
-		if [ "$ENGIE_MACHINE_LABEL" == "ios" ]; then
+		if [ "$KCI_MACHINE_LABEL" == "ios" ]; then
 
 		echo off
 			echo "BUILD_FOR_IOS_RC_CLIENT ::$BUILD_FOR_IOS_RC_CLIENT"
 			echo "BUILD_FOR_IOS_IPAD_RC_CLIENT ::$BUILD_FOR_IOS_IPAD_RC_CLIENT"
 			echo "${ws_loc}"
-			project_dir="${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR"
+			project_dir="${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR"
 			echo "project_dir ::$project_dir"
 			iPhoneBuild="false"  # iPhoneBuild parameter is set to true/false if ipa generation is required for iphone.
 			iPadBuild="false"    # iPadBuild parameter is set to true/false if ipa generation is required for ipad. 
@@ -254,7 +254,7 @@ if [ "$#" -eq 6 ]; then
 	
 	if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
 				if [ -d "$project_dir/binaries/iphone" ]; then
-					if [ -f "$project_dir/binaries/iphone/$ENGIE_CI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.kar" ]; then
+					if [ -f "$project_dir/binaries/iphone/$KCI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.kar" ]; then
 						iPhoneBuild="true"
 					else
 						build_Status="false"
@@ -264,7 +264,7 @@ if [ "$#" -eq 6 ]; then
 			
 			if [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
 				if [ -d "$project_dir/binaries/ipad" ]; then
-					if [ -f "$project_dir/binaries/ipad/$ENGIE_CI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.kar" ]; then
+					if [ -f "$project_dir/binaries/ipad/$KCI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.kar" ]; then
 						iPadBuild="true"
 					else
 						build_Status="false"
@@ -276,7 +276,7 @@ if [ "$#" -eq 6 ]; then
 			
 			#Read the property file and generate the ipa build for iphone/ipad.
 			if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ] && [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
-				cd $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR
+				cd $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR
 				chmod 777 ipaGenerate.sh
 				echo "Build required for both iPhone and iPad"
 				if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ] && [ $iPhoneBuild = "true" ]; then
@@ -291,7 +291,7 @@ if [ "$#" -eq 6 ]; then
 				echo "Build required for either iPhone or iPad"
 				if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ] || [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
 					if [ $iPhoneBuild = "true" ] || [ $iPadBuild = "true" ]; then
-						cd $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR
+						cd $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR
 						chmod 777 ipaGenerate.sh
 						./ipaGenerate.sh $propertyFile $BUILD_FOR_IOS_RC_CLIENT $BUILD_FOR_IOS_IPAD_RC_CLIENT $project_dir
 					else 
@@ -320,7 +320,7 @@ if [ "$#" -eq 6 ]; then
 			BUILD_FOR_ANDROID_MOBILE=$BUILD_FOR_ANDROID_RC_CLIENT
 			BUILD_FOR_ANDROID_TABLET=$BUILD_FOR_ANDROID_TAB_RC_CLIENT
 
-			project_dir="${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR"
+			project_dir="${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR"
 
 			## EXECUTE THE FOLLOWING CODE IN CASE OF PIPELINE FOR ANDROID - START
 
@@ -354,32 +354,32 @@ if [ "$#" -eq 6 ]; then
 			fi
 
 			## EXECUTE THE ABOVE CODE IN CASE OF PIPELINE FOR ANDROID - END
-			echo "ENGIE_CI_ANT_MODE is ::$ENGIE_CI_ANT_MODE"
+			echo "KCI_ANT_MODE is ::$KCI_ANT_MODE"
 			echo "BUILD_FOR_ANDROID_MOBILE is ::$BUILD_FOR_ANDROID_MOBILE"
 			echo "BUILD_FOR_ANDROID_TABLET is ::$BUILD_FOR_ANDROID_TABLET"
 			
 			#If the android phone build is true then copy the apk file to the specified location.
 			if [ $BUILD_FOR_ANDROID_MOBILE = "true" ]; then
-				#cd ${ws_loc}/$ENGIE_CI_TEMP_DIR/$ENGIE_UI_LOCAL_MODULE_DIR/$ENGIE_CI_TEMP_SUB_DIR_1/$ENGIE_UI_APP_ID
-				#$ENGIE_CI_ANT_CMD $ENGIE_CI_ANT_MODE
+				#cd ${ws_loc}/$KCI_TEMP_DIR/$KCI_UI_LOCAL_MODULE_DIR/$KCI_TEMP_SUB_DIR_1/$KCI_UI_APP_ID
+				#$KCI_ANT_CMD $KCI_ANT_MODE
 				#mv $project_dir/binaries/android/luavmandroid.apk $project_dir/binaries/android/$APK_NAME.apk
-				if [ $ENGIE_CI_ANT_MODE = "release" ]; then 
-					cp "${ws_loc}/temp/$ENGIE_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$ENGIE_UI_LOCAL_MODULE_DIR/build/outputs/apk/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+				if [ $KCI_ANT_MODE = "release" ]; then 
+					cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 
 					#If unsigned.apk file exists then copy the keystore and zipalign files to binary folder.
-					if [ -f "$project_dir/binaries/android/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk" ]; then
+					if [ -f "$project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" ]; then
 						echo "APK for mobile found"
 						echo "copying keystore file to binary folder"
-						cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/$ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $project_dir/binaries/android
+						cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $project_dir/binaries/android
 						echo "copying zipalign file to binary folder"
 						
 						#Based on the BuildMachineOS zipalign command is been executed.
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/zipalign.exe $project_dir/binaries/android
+							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign.exe $project_dir/binaries/android
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
-							cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/zipalign $project_dir/binaries/android
+							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign $project_dir/binaries/android
 						fi
 						echo "copying keystore file and zipalign file to binary folder completed "
 				
@@ -391,9 +391,9 @@ if [ "$#" -eq 6 ]; then
 						
 						# The "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore" 
 						# command is used to sign the android.apk file.
-						jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $ENGIE_CI_ANDROID_SIGNING_CERTIFICATE_PASS $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
+						jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $KCI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $KCI_ANDROID_SIGNING_CERTIFICATE_PASS $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
 
-						jarsigner -verify -certs $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME 				
+						jarsigner -verify -certs $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME 				
 						
 						if [ -f $APK_NAME.apk ]; then
 							rm $APK_NAME.apk
@@ -401,13 +401,13 @@ if [ "$#" -eq 6 ]; then
 						
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							./zipalign.exe -v 4 $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign.exe -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
 							chmod 777 zipalign
-							./zipalign -v 4 $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						fi
-						rm -rf $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+						rm -rf $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 						echo "Signing Android Mobile APK file - COMPLETED"
 						#$project_dir/binaries/android/$APK_NAME.apk
 						
@@ -415,8 +415,8 @@ if [ "$#" -eq 6 ]; then
 						build_Status="false"
 					fi
 				else 
-					if [ $ENGIE_CI_ANT_MODE = "debug" ]; then 
-						cp "${ws_loc}/temp/$ENGIE_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$ENGIE_UI_LOCAL_MODULE_DIR/build/outputs/apk/$ENGIE_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
+					if [ $KCI_ANT_MODE = "debug" ]; then 
+						cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
 					fi
 				fi
 			else
@@ -428,22 +428,22 @@ if [ "$#" -eq 6 ]; then
 			# Copy the apk file to the specified location.
 			if [ $BUILD_FOR_ANDROID_TABLET = "true" ]; then
 				#mv $project_dir/binaries/tabrcandroid/luavmandroid.apk $project_dir/binaries/tabrcandroid/$APK_NAME.apk
-				if [ $ENGIE_CI_ANT_MODE = "release" ]; then 
-					cp "${ws_loc}/temp/$ENGIE_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$ENGIE_UI_LOCAL_MODULE_DIR/build/outputs/apk/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/tabrcandroid/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+				if [ $KCI_ANT_MODE = "release" ]; then 
+					cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/tabrcandroid/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 					
 					#If unsigned.apk file exists then copy the keystore and #
 					#zipalign files to binary folder.
-					if [ -f "$project_dir/binaries/tabrcandroid/$ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk" ]; then
+					if [ -f "$project_dir/binaries/tabrcandroid/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" ]; then
 						echo "APK for tablet is available"
 						echo "copying keystore file to binary folder"
-						cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/$ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $project_dir/binaries/tabrcandroid
+						cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $project_dir/binaries/tabrcandroid
 						echo "copying zipalign file to binary folder"
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/zipalign.exe $project_dir/binaries/tabrcandroid
+							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign.exe $project_dir/binaries/tabrcandroid
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
-							cp $JENKINS_BASE_HOME/$ENGIE_CI_SCRIPTS_DIR/zipalign $project_dir/binaries/tabrcandroid
+							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign $project_dir/binaries/tabrcandroid
 						fi
 
 						echo "copying keystore file and zipalign file to binary folder completed "
@@ -456,12 +456,12 @@ if [ "$#" -eq 6 ]; then
 						
 						#The "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore" 
 						#command is used to sign the android.apk file for android tablet.
-						jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $ENGIE_CI_ANDROID_SIGNING_CERTIFICATE_PASS $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
+						jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $KCI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $KCI_ANDROID_SIGNING_CERTIFICATE_PASS $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
 
-						jarsigner -verify -certs $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME 				
+						jarsigner -verify -certs $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME 				
 						
-						#jarsigner -verbose -keystore $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_PASS $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
-						#jarsigner -verbose -verify -keystore $ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+						#jarsigner -verbose -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $KCI_ANDROID_SIGNING_KEYSTORE_PASS $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
+						#jarsigner -verbose -verify -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 
 						
 						if [ -f $APK_NAME.apk ]; then
@@ -470,21 +470,21 @@ if [ "$#" -eq 6 ]; then
 						
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							./zipalign.exe -v 4 $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign.exe -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
 							chmod 777 zipalign
-							./zipalign -v 4 $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						fi
-						rm -rf $ENGIE_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+						rm -rf $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 						echo "Signing Android tablet APK file - COMPLETED"
 					else
 						build_Status="false"
 					fi
 					
 				else 
-					if [ $ENGIE_CI_ANT_MODE = "debug" ]; then 
-						cp "${ws_loc}/temp/$ENGIE_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$ENGIE_UI_LOCAL_MODULE_DIR/build/outputs/apk/$ENGIE_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/tabrcandroid/$APK_NAME.apk
+					if [ $KCI_ANT_MODE = "debug" ]; then 
+						cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/tabrcandroid/$APK_NAME.apk
 					fi
 				fi
 			else
@@ -502,21 +502,21 @@ if [ "$#" -eq 6 ]; then
 		echo "${ws_loc}"
 
 		WIN_NAME=$(echo ${binaryname}_${PARENT_BUILD_NUMBER})
-		project_dir="${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR"
+		project_dir="${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR"
 
 		#Repacking the windows binaries if build for windows is true.
 		if [ $BUILD_FOR_WINDOWS8_RC_CLIENT = "true" ]; then
-			mv $project_dir/$ENGIE_CI_GEN_WINDOWS8_BINARY_DIR/$ENGIE_CI_GEN_WINDOWS8_ORIG_FILE_NAME $project_dir/$ENGIE_CI_GEN_WINDOWS8_BINARY_DIR/$WIN_NAME.xap
+			mv $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$KCI_GEN_WINDOWS8_ORIG_FILE_NAME $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$WIN_NAME.xap
 		else
 			build_Status="false"
 			echo "BUILD_FOR_WINDOWS8_RC_CLIENT property has been set to false, hence skipping Repackaging of XAP task"
 		fi
 
 		if [ $BUILD_FOR_WINDOWS81_RC_CLIENT = "true" ]; then
-			mv $project_dir/$ENGIE_CI_GEN_WINDOWS81_BINARY_DIR/$ENGIE_CI_GEN_WINDOWS81_ORIG_FILE_NAME $project_dir/$ENGIE_CI_GEN_WINDOWS81_BINARY_DIR/$WIN_NAME.xap
+			mv $project_dir/$KCI_GEN_WINDOWS81_BINARY_DIR/$KCI_GEN_WINDOWS81_ORIG_FILE_NAME $project_dir/$KCI_GEN_WINDOWS81_BINARY_DIR/$WIN_NAME.xap
 		else
 			build_Status="false"
-			echo "ENGIE_CI_GEN_WINDOWS81_BINARY_DIR property has been set to false, hence skipping Repackaging of XAP task"
+			echo "KCI_GEN_WINDOWS81_BINARY_DIR property has been set to false, hence skipping Repackaging of XAP task"
 		fi
 
 		if [ $BUILD_FOR_WINDOWS81_TAB_RC_CLIENT = "true" ]; then
@@ -538,22 +538,22 @@ if [ "$#" -eq 6 ]; then
 		#Code for generating the email if the main job fails.
 		#Creating the parameter to assign the index_fail.html file location.
 		echo "$PROP_ROOT_DIR/$JOB_NAME"			
-		echo "$ENGIE_PROPERTIES_ROOT_DIRECTORY/$ENGIE_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
-		Template_FOLDER="$ENGIE_PROPERTIES_ROOT_DIRECTORY/$ENGIE_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
+		echo "$KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
+		Template_FOLDER="$KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
 		#Verifying if the $Template_FOLDER exists.
 		if [ -f "$Template_FOLDER" ]; then
 			echo "$Template_FOLDER exists"
 			echo "started copying the index file"
 			echo "INDEX1_FILE => $Template_FOLDER"
 			#Assinging the values to the index_fail.html.
-			sed -i -e 's|$ENGIE_UI_SVN_PATH|'"$ENGIE_UI_SVN_PATH"'|g' $Template_FOLDER
-			sed -i -e 's|$ENGIE_UI_GIT_BRANCH|'"$ENGIE_UI_GIT_BRANCH"'|g' $Template_FOLDER
+			sed -i -e 's|$KCI_UI_SVN_PATH|'"$KCI_UI_SVN_PATH"'|g' $Template_FOLDER
+			sed -i -e 's|$KCI_UI_GIT_BRANCH|'"$KCI_UI_GIT_BRANCH"'|g' $Template_FOLDER
 			sed -i -e 's|$appid|'"$appid"'|g' $Template_FOLDER
 			sed -i -e 's|$iphonebundleidentifierkey|'"$iphonebundleidentifierkey"'|g' $Template_FOLDER
-			sed -i -e 's|$ENGIE_CI_GEN_IPA_TASK_DEVELOPER_NAME|'"$ENGIE_CI_GEN_IPA_TASK_DEVELOPER_NAME"'|g' $Template_FOLDER
-			sed -i -e 's|$ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE_NAME|'"$ENGIE_CI_GEN_IPA_TASK_PRO_PROFILE_NAME"'|g' $Template_FOLDER
+			sed -i -e 's|$KCI_GEN_IPA_TASK_DEVELOPER_NAME|'"$KCI_GEN_IPA_TASK_DEVELOPER_NAME"'|g' $Template_FOLDER
+			sed -i -e 's|$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME|'"$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME"'|g' $Template_FOLDER
 			#Deleting the created index_fail.html-e file.
-			rm -f $ENGIE_PROPERTIES_ROOT_DIRECTORY/$ENGIE_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html-e
+			rm -f $KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html-e
 		else
 			echo "$Template_FOLDER does not exist"
 			#echo "Exiting...."
@@ -563,7 +563,7 @@ if [ "$#" -eq 6 ]; then
 	fi
 	#End of the condition to check if binaries are not created and sending emails for job failure.
 
-		project_dir="${ws_loc}/$ENGIE_UI_LOCAL_MODULE_DIR"
+		project_dir="${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR"
 
 		echo "project_dir ::$project_dir"
 		
@@ -584,8 +584,8 @@ if [ "$#" -eq 6 ]; then
 		if [ -f "zipalign" ]; then
 			rm -rf zipalign
 		fi
-		if [ -f "$ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME" ]; then
-			rm -rf "$ENGIE_CI_ANDROID_SIGNING_KEYSTORE_FILE_NAME"
+		if [ -f "$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME" ]; then
+			rm -rf "$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME"
 		fi
 		if [ -f "luavmandroid.apk" ]; then
 			rm -rf luavmandroid.apk
