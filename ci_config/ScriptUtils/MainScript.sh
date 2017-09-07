@@ -538,8 +538,8 @@ if [ "$#" -eq 6 ]; then
 		#Code for generating the email if the main job fails.
 		#Creating the parameter to assign the index_fail.html file location.
 		echo "$PROP_ROOT_DIR/$JOB_NAME"			
-		echo "$KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
-		Template_FOLDER="$KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html"
+		echo "$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"
+		Template_FOLDER="$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"
 		#Verifying if the $Template_FOLDER exists.
 		if [ -f "$Template_FOLDER" ]; then
 			echo "$Template_FOLDER exists"
@@ -553,7 +553,7 @@ if [ "$#" -eq 6 ]; then
 			sed -i -e 's|$KCI_GEN_IPA_TASK_DEVELOPER_NAME|'"$KCI_GEN_IPA_TASK_DEVELOPER_NAME"'|g' $Template_FOLDER
 			sed -i -e 's|$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME|'"$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME"'|g' $Template_FOLDER
 			#Deleting the created index_fail.html-e file.
-			rm -f $KCI_PROPERTIES_ROOT_DIRECTORY/$KCI_MAC_SLAVE_INIT_JOB_NAME/notification_templates/index_fail.html-e
+			rm -f $KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html-e
 		else
 			echo "$Template_FOLDER does not exist"
 			#echo "Exiting...."
