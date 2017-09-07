@@ -38,7 +38,7 @@
     <attributes name="ACCESS_COARSE_LOCATION" value="false"/>
     <attributes name="RESTART_PACKAGES" value="false"/>
     <attributes name="ID_CAP_PHONEDIALER" value="true"/>
-    <attributes name="wp81spackagenamekey" value="EnergyCount"/>
+    <attributes name="wp81spackagenamekey" value="ProjName"/>
     <attributes name="certs_trust_store_type" value="JKS"/>
     <attributes name="objects3D" value="false"/>
     <attributes name="WP8_ID_CAP_WALLET_PAYMENTINSTRUMENTS" value="false"/>
@@ -192,7 +192,7 @@
     <attributes name="RECEIVE_SMS" value="false"/>
     <attributes name="wp10applogokey" value=""/>
     <attributes name="BIND_REMOTEVIEWS" value="false"/>
-    <attributes name="appidkey" value="EnergyCount1"/>
+    <attributes name="appidkey" value="ProjName1"/>
     <attributes name="svcdocrefreshdynamic" value="FALSE"/>
     <attributes name="Proximity" value="true"/>
     <attributes name="WP8_ID_CAP_PROXIMITY" value="true"/>
@@ -210,7 +210,7 @@
     <attributes name="wp10initialRotationPreferenceKey" value="landscape"/>
     <attributes name="SET_ALWAYS_FINISH" value="false"/>
     <attributes name="apptitle" value=""/>
-    <attributes name="apppackagekey" value="com.engie.EnergyCountInHouse"/>
+    <attributes name="apppackagekey" value="com.kci.ProjName"/>
     <attributes name="WP8_ID_CAP_WALLET_SECUREELEMENT" value="false"/>
     <attributes name="SET_ALARM" value="false"/>
     <attributes name="wp10picturesLibrary" value="false"/>
@@ -224,7 +224,7 @@
     <attributes name="win8descriptionkey" value="Sample Test Application"/>
     <attributes name="extendTop" value="false"/>
     <attributes name="REORDER_TASKS" value="false"/>
-    <attributes name="iphonebundleidentifierkey" value="com.engie.EnergyCountInHouse"/>
+    <attributes name="iphonebundleidentifierkey" value="com.kci.ProjName"/>
     <attributes name="WP8_ID_CAP_NETWORKING" value="true"/>
     <attributes name="studiovizproject" value="true"/>
     <attributes name="ID_CAP_SENSORS" value="true"/>
@@ -273,8 +273,8 @@
     <attributes name="UPDATE_DEVICE_STATS" value="false"/>
     <attributes name="ACCESS_NETWORK_STATE" value="true"/>
     <attributes name="SET_WALLPAPER_HINTS" value="false"/>
-    <attributes name="win8packagenamekey" value="EnergyCount"/>
-    <attributes name="wp10displayname" value="EnergyCount"/>
+    <attributes name="win8packagenamekey" value="ProjName"/>
+    <attributes name="wp10displayname" value="ProjName"/>
     <attributes name="WP8_ID_CAP_LOCATION" value="true"/>
     <attributes name="wp8cycle4key" value=""/>
     <attributes name="svcdocfromenvironment" value="true"/>
@@ -330,7 +330,7 @@
     <attributes name="wp8doNotInstalllowerMemory" value="false"/>
     <attributes name="cloud_http_redirect" value="false"/>
     <attributes name="apmservicerequest" value="true"/>
-    <attributes name="appnamekey" value="EnergyCount"/>
+    <attributes name="appnamekey" value="ProjName"/>
     <attributes name="log_level" value="ERROR"/>
     <attributes name="wp10removableStorage" value="false"/>
     <attributes name="tileUpdateRecurrenceKey" value=""/>
@@ -373,7 +373,7 @@
     <attributes name="andmaxsdkkey" value="None"/>
     <attributes name="wp8iconcountnotificationkey" value="false"/>
     <attributes name="READ_SYNC_SETTINGS" value="false"/>
-    <attributes name="wp10packagenamekey" value="EnergyCount"/>
+    <attributes name="wp10packagenamekey" value="ProjName"/>
     <attributes name="statusBarStyle" value="STATUS_BAR_STYLE_DEFAULT"/>
     <attributes name="wp10versionbuildkey" value="0"/>
     <attributes name="WRITE_HISTORY_BOOKMARKS" value="false"/>
@@ -413,7 +413,7 @@
     <attributes name="WP8_ID_CAP_MAP" value="true"/>
     <attributes name="wp10privateNetworkClientServer" value="false"/>
     <attributes name="tcandroid640basefontsize" value="12"/>
-    <attributes name="winmangotiletitlekey" value="EnergyCount"/>
+    <attributes name="winmangotiletitlekey" value="ProjName"/>
     <attributes name="WP8_ID_CAP_ISV_CAMERA" value="true"/>
     <attributes name="cloud_web_xml_custom_filters" value=""/>
     <attributes name="READ_CALENDAR" value="false"/>
@@ -424,7 +424,7 @@
     <attributes name="apmformExit" value="false"/>
     <attributes name="CHANGE_WIFI_MULTICAST_STATE" value="false"/>
     <attributes name="wp10widelogokey" value=""/>
-    <attributes name="cloud_url" value="https://engie-dev.konycloud.com"/>
+    <attributes name="cloud_url" value="https://kci-dev.konycloud.com"/>
     <attributes name="certs_key_store_pwd" value="kds/0eUc+i3BqFqSkpCk4g=="/>
     <attributes name="CALL_PRIVILEGED" value="false"/>
     <attributes name="SUBSCRIBED_FEEDS_READ" value="false"/>
@@ -518,12 +518,12 @@
     <attributes name="apmerrorunhandledexception" value="true"/>
     <attributes name="tcandroid320basefontsize" value="12"/>
     <attributes name="BROADCAST_SMS" value="false"/>
-    <attributes name="cloud_env_name" value="ENGIE-Engie DEV"/>
+    <attributes name="cloud_env_name" value="KCI-DEV"/>
     <attributes name="wp10lockscreennotificationskey" value="Not set"/>
     <attributes name="ID_REQ_REARCAMERA" value="false"/>
     <attributes name="tcandroid360basefontsize" value="12"/>
     <attributes name="wp10badgelogokey" value=""/>
-    <attributes name="win8displaynamekey" value="EnergyCount"/>
+    <attributes name="win8displaynamekey" value="ProjName"/>
     <attributes name="wp8cycle7key" value=""/>
     <attributes name="tcbb400basefontsize" value="12"/>
     <attributes name="spaandroidtab800basefontsize" value="12"/>
