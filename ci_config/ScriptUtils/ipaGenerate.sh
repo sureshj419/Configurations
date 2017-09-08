@@ -66,9 +66,9 @@ if [ "$#" -eq 4 ]; then
 
 		mac_pwd="$KCI_GEN_IPA_TASK_MAC_PWD"
 		jenkins_autofiles_dir="$KCI_GEN_IPA_TASK_AUTOMATION_FILES_PATH"
-		xcode_updater_jar="$XCODE_CONFIG_UPDATER_JAR"
-		infoPlistConfig_file="$INFOPLIST_CONFIG_FILE"
-		xcodeConfig_file="Config.properties"
+		xcode_updater_jar="$KCI_GEN_IPA_TASK_XCODE_UPDATER_JAR"
+		infoPlistConfig_file="$KCI_GEN_IPA_TASK_INFOPLIST_CONFIG_PATH"
+		xcodeConfig_file="$KCI_GEN_IPA_TASK_XCODE_CONFIG_PATH"
 		# the entitlements file need to be added to the projects root folder when your project requries any entitlements.
 		entitlements_file="$IOS_ENTITLEMENTS_FILE"
 
@@ -324,7 +324,7 @@ if [ "$#" -eq 4 ]; then
 		rm -f ${DIR}/AutomationFiles/Config.properties
 		#Creating a new file Config.properties and Adding the required buid settings to the file as the tool below takes the values from property file and modifies the build settings.
 		echo "Creating the Config.properties file with required properties"
-		echo 'IPHONEOS_DEPLOYMENT_TARGET=7.0\r\nONLY_ACTIVE_ARCH=NO\r\nGCC_OPTIMIZATION_LEVEL=s\r\nINFOPLIST_FILE=Info.plist\r\nOTHER_CFLAGS=-fstack-protector\r\nOTHER_LDFLAGS=-all_load,-ObjC,$(SQL_LIBRARY),$(DATAVIZ_LIBRARY),-lc++,$(PROTECTION_LIBRARY),$(ARXAN_OTHERFLAGS),-framework,JavaScriptCore' >> $xcodeConfig_file
+		echo 'IPHONEOS_DEPLOYMENT_TARGET=10.2\r\nONLY_ACTIVE_ARCH=NO\r\nGCC_OPTIMIZATION_LEVEL=s\r\nINFOPLIST_FILE=Info.plist\r\nOTHER_CFLAGS=-fstack-protector\r\nOTHER_LDFLAGS=-all_load,-ObjC,$(SQL_LIBRARY),$(DATAVIZ_LIBRARY),-lc++,$(PROTECTION_LIBRARY),$(ARXAN_OTHERFLAGS),-framework,JavaScriptCore' >> $xcodeConfig_file
 		echo "CODE_SIGN_ENTITLEMENTS=$entitlements_file\r\nPROVISIONING_PROFILE=$PROVISIONING_PROFILE\r\nPROVISIONING_PROFILE[sdk\=iphoneos*]=$PROVISIONING_PROFILE\r\nCODE_SIGN_IDENTITY=$DEVELOPER_NAME\r\nCODE_SIGN_IDENTITY[sdk\=iphoneos*]=$DEVELOPER_NAME\r\nDEVELOPMENT_TEAM=$DEVELOPMENT_TEAM" >> $xcodeConfig_file
 		
 		echo "Running the xCode Automation tool to make the xCode and Info.Plist changes"
