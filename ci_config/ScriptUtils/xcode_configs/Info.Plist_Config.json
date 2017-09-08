@@ -9,13 +9,13 @@
 			},
 			{
 				"key": "CFBundleVersion",
-				"value": "6.12",
+				"value": "1.0",
 				"type": "string",
 				"action": "update"
 			},
 			{
 				"key": "CFBundleShortVersionString",
-				"value": "6.12",
+				"value": "1.0",
 				"type": "string",
 				"action": "update"
 			},
