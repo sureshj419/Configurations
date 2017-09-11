@@ -43,10 +43,10 @@ if [ "$#" -eq 3 ]; then
 
 		# CHECKING FOR MOBILES
 		
-		if [ $EXECUTE_PIPELINE = true ]; then
+		if [ $EXECUTE_PIPELINE = "true" ]; then
 			AND_BINARY_FOLDER="$JENKINS_HOME\\workspace\\$KCI_MAC_SLAVE_MAIN_JOB_NAME\\workspace"
 		else
-			if [ $BUILD_FOR_IOS_RC_CLIENT = true ]; then
+			if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
 				AND_BINARY_FOLDER="$JENKINS_HOME\\workspace\\$KCI_MAC_SLAVE_MAIN_JOB_NAME\\workspace"
 			else 
 				if [[ ! -z $KCI_WIN_SLAVE_INIT_JOB_NAME ]];then
@@ -60,10 +60,10 @@ if [ "$#" -eq 3 ]; then
 		fi	
 		
 		# CHECKING FOR TABLETS
-		if [ $EXECUTE_PIPELINE = true ]; then
+		if [ $EXECUTE_PIPELINE = "true" ]; then
 			AND_TAB_BINARY_FOLDER="$JENKINS_HOME\\workspace\\$KCI_MAC_SLAVE_MAIN_JOB_NAME\\workspace"
 		else
-			if [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = true ]; then
+			if [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
 				AND_TAB_BINARY_FOLDER="$JENKINS_HOME\\workspace\\$KCI_MAC_SLAVE_MAIN_JOB_NAME\\workspace"
 			else 
 				if [[ ! -z $KCI_WIN_SLAVE_INIT_JOB_NAME ]];then

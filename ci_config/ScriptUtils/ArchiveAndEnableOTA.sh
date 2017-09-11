@@ -597,7 +597,7 @@ if [ "$#" -eq 30 ]; then
              echo "Copying android mobile binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME folder"
              cp "$ANDROID_BINARY_PATH/$ANDROID_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY
              if [ -f "$ANDROID_BINARY_PATH/$ANDROID_BINARY" ]; then
-               echo "Successfully copied $ANDROID_BINARY to $ANDROID_BINARY_PATH location"
+               echo "Successfully copied $ANDROID_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY location"
                ANDROID_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
                echo "ANDROID_BINARY_LABEL value is set to :: $ANDROID_BINARY_LABEL"
              else

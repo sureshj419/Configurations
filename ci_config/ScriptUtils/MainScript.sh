@@ -508,21 +508,21 @@ if [ "$#" -eq 6 ]; then
 		if [ $BUILD_FOR_WINDOWS8_RC_CLIENT = "true" ]; then
 			mv $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$KCI_GEN_WINDOWS8_ORIG_FILE_NAME $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$WIN_NAME.xap
 		else
-			build_Status="false"
+			#build_Status="false"
 			echo "BUILD_FOR_WINDOWS8_RC_CLIENT property has been set to false, hence skipping Repackaging of XAP task"
 		fi
 
 		if [ $BUILD_FOR_WINDOWS81_RC_CLIENT = "true" ]; then
 			mv $project_dir/$KCI_GEN_WINDOWS81_BINARY_DIR/$KCI_GEN_WINDOWS81_ORIG_FILE_NAME $project_dir/$KCI_GEN_WINDOWS81_BINARY_DIR/$WIN_NAME.xap
 		else
-			build_Status="false"
+			#build_Status="false"
 			echo "KCI_GEN_WINDOWS81_BINARY_DIR property has been set to false, hence skipping Repackaging of XAP task"
 		fi
 
 		if [ $BUILD_FOR_WINDOWS81_TAB_RC_CLIENT = "true" ]; then
 			mv $project_dir/binaries/windows/windows8/$appid.appx $project_dir/binaries/windows/windows8/$WIN_NAME.appx
 		else
-			build_Status="false"
+			#build_Status="false"
 			echo "BUILD_FOR_WINDOWS81_TAB_RC_CLIENT property has been set to false, hence skipping Repackaging of XAP task"
 		fi
 		echo "POST BUILD ACTIVITY - Repackage WINDOWS Binaries - END"
