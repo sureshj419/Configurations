@@ -221,7 +221,7 @@ if [ "$#" -eq 30 ]; then
 
   #Standard Download Link Label
   STD_DOWNLOAD_LINK_LABEL="Click Here To Install"
-  ARTEFACT_UNAVAILABLE_LABEL="Artefact Currently Unavailable"
+  ARTEFACT_UNAVAILABLE_LABEL="Artifact Currently Unavailable"
   DISABLED_LINK_STYLE="pointer-events: none; cursor: default; color:black;"
 
   # Checking and creating $OTA_TEMP_DIR folder if not already available
@@ -956,29 +956,54 @@ if [ "$#" -eq 30 ]; then
     rm -f $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphoneT.plist-e
   fi
 
-  ## Publish the created OTA artefacts to S3 bucket
-  ##START
-  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
-    echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
-    echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
-    cd $OTA_TEMP_DIR/$OTA_SUB_DIR
-    echo "Now Issuing the following cp command on S3"
-    echo "aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
-    aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
-    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
-    aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
-    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
-    aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
-    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
-    aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
+  	if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
+	  ## Publish the created OTA artefacts to S3 bucket
+	  ##START
+	  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
+		echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
+		echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
+		cd $OTA_TEMP_DIR/$OTA_SUB_DIR
+		echo "Now Issuing the following cp command on S3"
+		echo "aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
+		aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
+		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
+		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
+		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
+		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
+		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
+		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
 
-    echo "Done with attempt to publish to s3 bucket!!"
-  else
-    echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"
-  fi
-  ##END
-  echo "DONE!!!"
-   
+		echo "Done with attempt to publish to s3 bucket!!"
+	  else
+		echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"
+	  fi
+	  ##END
+	    echo "DONE with S3 Publish!!!"
+	else 
+	  ## Publish the created OTA artefacts to Tomcat OTA
+	  ##START
+	  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
+		echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to Tomcat"
+		echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
+		cd $OTA_TEMP_DIR/$OTA_SUB_DIR
+		echo "Now Issuing the following cp command on Tomcat"
+		echo "cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR "
+		cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR 
+		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/"
+		ls $KCI_TOMCAT_OTA_DIR/
+		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$JOB_NAME/"
+		ls $KCI_TOMCAT_OTA_DIR/$JOB_NAME/
+		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR/"
+		ls $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR/
+
+		echo "Done with attempt to publish to Tomcat!!"
+	  else
+		echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"
+	  fi
+	  ##END
+	    echo "DONE with Tomcat Publish!!!"
+	fi
+	
    #Code to get rid of OTA_TEMP_DIR
    #Checking if the OTA_TEMP_DIR exists
    if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then	
@@ -992,8 +1017,8 @@ if [ "$#" -eq 30 ]; then
 		mv  $TGT_DIR temp
 		echo "Deleting the previous build folders"
 		rm -rf build*/
-		#Renaming the folder back to build$BUILD_NO
-		echo "Renamimg the current build folder from temp to $TGT_DIR"
+		#Renaming the folder back to build $BUILD_NO
+		echo "Renaming the current build folder from temp to $TGT_DIR"
 		mv temp $TGT_DIR
 		#Removing all the folders and files in build 
 		#except .html files which are used for email purpose.
