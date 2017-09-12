@@ -325,7 +325,7 @@ if [ "$#" -eq 4 ]; then
 		
 		# Passing empty string the entitlements file when IOS_ENTITLEMENTS_REQUIRED is false.
 		if [ $IOS_ENTITLEMENTS_REQUIRED = "false" ]; then
-			entitlements_file = "";
+			entitlements_file="";
 			echo "Passing empty entitlements file:$entitlements_file"
 		fi
 		#Creating a new file Config.properties and Adding the required buid settings to the file as the tool below takes the values from property file and modifies the build settings.
