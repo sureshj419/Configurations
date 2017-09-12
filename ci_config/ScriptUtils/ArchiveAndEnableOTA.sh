@@ -994,7 +994,7 @@ if [ "$#" -eq 30 ]; then
 			mkdir -p $KCI_TOMCAT_OTA_DIR/$TGT_DIR
 		fi
 		echo "cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR "
-		cp -r $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR 
+		cp -r $TGT_DIR $KCI_TOMCAT_OTA_DIR 
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/"
 		ls $KCI_TOMCAT_OTA_DIR/
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$TGT_DIR/"
