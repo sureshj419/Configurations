@@ -79,11 +79,11 @@ if [ "$#" -eq 3 ]; then
 
 		OTA_PUBLISH_URL=$KCI_S3_BASE_URL
 
-		#if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
-		#	OTA_PUBLISH_URL=$KCI_S3_BASE_URL
-		#else 
-		#	OTA_PUBLISH_URL=$KCI_OTA_SERVER_URL
-		#fi
+		if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
+			OTA_PUBLISH_URL=$KCI_S3_BASE_URL
+		else 
+			OTA_PUBLISH_URL=$KCI_OTA_SERVER_URL
+		fi
 
 		echo "OTA_PUBLISH_URL ::"$OTA_PUBLISH_URL
 
