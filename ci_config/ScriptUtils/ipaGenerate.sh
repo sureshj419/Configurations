@@ -322,6 +322,12 @@ if [ "$#" -eq 4 ]; then
 		cd ${DIR}/AutomationFiles/
 		echo "Removing the existing Config.properties file"
 		rm -f ${DIR}/AutomationFiles/Config.properties
+		
+		# Passing empty string the entitlements file when IOS_ENTITLEMENTS_REQUIRED is false.
+		if [ $IOS_ENTITLEMENTS_REQUIRED = "false" ]; then
+			entitlements_file = "";
+			echo "Passing empty entitlements file:$entitlements_file"
+		fi
 		#Creating a new file Config.properties and Adding the required buid settings to the file as the tool below takes the values from property file and modifies the build settings.
 		echo "Creating the Config.properties file with required properties"
 		echo 'IPHONEOS_DEPLOYMENT_TARGET=7.0\r\nONLY_ACTIVE_ARCH=NO\r\nGCC_OPTIMIZATION_LEVEL=s\r\nINFOPLIST_FILE=Info.plist\r\nOTHER_CFLAGS=-fstack-protector\r\nOTHER_LDFLAGS=-all_load,-ObjC,$(SQL_LIBRARY),$(DATAVIZ_LIBRARY),-lc++,$(PROTECTION_LIBRARY),$(ARXAN_OTHERFLAGS),-framework,JavaScriptCore' >> $xcodeConfig_file
