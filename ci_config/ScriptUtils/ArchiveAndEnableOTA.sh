@@ -381,20 +381,20 @@ if [ "$#" -eq 30 ]; then
             cp "$IPHONE_BINARY_PATH/$IPHONE_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY
 
             if [ -f "$IPHONE_BINARY_PATH/$IPHONE_BINARY" ]; then
-              echo "Successfully copied $IPHONE_BINARY to $IPHONE_BINARY_PATH location"
+              echo "Successfully copied $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPHONE_BINARY_LABEL value is set to :: $IPHONE_BINARY_LABEL"
             else
-              echo "Could not copy $IPHONE_BINARY to $IPHONE_BINARY_PATH location"
+              echo "Could not copy $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPHONE_BINARY_LABEL value to :: $IPHONE_BINARY_LABEL"
             fi
             if [ -f "$IPHONE_BINARY_PATH/$IPHONE_KAR" ]; then
-              echo "Successfully copied $IPHONE_KAR to $IPHONE_BINARY_PATH location"
+              echo "Successfully copied $IPHONE_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_KAR_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPHONE_KAR_LABEL value is set to :: $IPHONE_KAR_LABEL"
             else
-              echo "Could not copy $IPHONE_KAR to $IPHONE_BINARY_PATH location"
+              echo "Could not copy $IPHONE_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPHONE_KAR_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPHONE_KAR_LABEL value to :: $IPHONE_KAR_LABEL"
             fi
@@ -487,20 +487,20 @@ if [ "$#" -eq 30 ]; then
             cp "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME/$IPHONE_TAB_BINARY
             ## Insert code here to check if the iphone tab binary and kar file got copied to the intended folder
             if [ -f "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" ]; then
-              echo "Successfully copied $IPHONE_TAB_BINARY to $IPHONE_TAB_BINARY_PATH location"
+              echo "Successfully copied $IPHONE_TAB_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPAD_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPAD_BINARY_LABEL value is set to :: $IPAD_BINARY_LABEL"
             else
-              echo "Could not copy $IPHONE_TAB_BINARY to $IPHONE_TAB_BINARY_PATH location"
+              echo "Could not copy $IPHONE_TAB_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPAD_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPAD_BINARY_LABEL value to :: $IPAD_BINARY_LABEL"
             fi
             if [ -f "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_KAR" ]; then
-              echo "Successfully copied $IPHONE_TAB_KAR to $IPHONE_TAB_BINARY_PATH location"
+              echo "Successfully copied $IPHONE_TAB_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPAD_KAR_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPAD_KAR_LABEL value is set to :: $IPAD_KAR_LABEL"
             else
-              echo "Could not copy $IPHONE_TAB_KAR to $IPHONE_TAB_BINARY_PATH location"
+              echo "Could not copy $IPHONE_TAB_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
               IPAD_KAR_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPAD_KAR_LABEL value to :: $IPAD_KAR_LABEL"
             fi
@@ -993,8 +993,8 @@ if [ "$#" -eq 30 ]; then
 		if [ ! -d "$KCI_TOMCAT_OTA_DIR/$TGT_DIR" ]; then
 			mkdir -p $KCI_TOMCAT_OTA_DIR/$TGT_DIR
 		fi
-		echo "cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR "
-		cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR 
+		echo "cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR "
+		cp -r $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR 
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/"
 		ls $KCI_TOMCAT_OTA_DIR/
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$TGT_DIR/"
