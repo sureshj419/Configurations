@@ -73,10 +73,10 @@ if [ "$#" -eq 4 ]; then
 		entitlements_file="$IOS_ENTITLEMENTS_FILE"
 
 		echo "****************Renaming the orginal KAR file************"
-		echo "Source is => $project_dir/$ios_binary_dir/$ios_kar_orig_file_name.KAR"
-		echo "Target is => $project_dir/binaries/iphone/$renamed_iphone_installer.KAR"
+		echo "Source is => $project_dir/$ios_binary_dir/$ios_kar_orig_file_name.KAR"		
 		renamed_iphone_installer=$(echo $TagName | tr -d '\r')_$(echo $IPA_BUILD_NUMBER | tr -d '\r')
 		echo "renamed_iphone_installer => $renamed_iphone_installer"
+		echo "Target is => $project_dir/binaries/iphone/$renamed_iphone_installer.KAR"
 		renamed_iphone_kar=$(echo $renamed_iphone_installer | tr -d '\r')"FunctionalModule"
 		build_folder=$(echo "build"$IPA_BUILD_NUMBER | tr -d '\r')
 		build_artifex=$(echo "buildArtifex"$IPA_BUILD_NUMBER | tr -d '\r')
@@ -432,7 +432,7 @@ if [ "$#" -eq 4 ]; then
 
 		echo "Copying IPA and KAR file back to binaries folder"
 		echo "Copying ipa to $project_dir/$ios_binary_dir from $JENKINS_OUTPUT_BINARY_DIR/$JOB_NAME/$build_folder"
-#Copying the IPA and KAR files back to the binaries.
+		#Copying the IPA and KAR files back to the binaries.
 		
 		cp $JENKINS_OUTPUT_BINARY_DIR/$JOB_NAME/$build_folder/$renamed_iphone_installer.ipa $project_dir/$ios_binary_dir/
 		
