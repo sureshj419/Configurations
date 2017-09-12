@@ -982,19 +982,23 @@ if [ "$#" -eq 30 ]; then
 	else 
 	  ## Publish the created OTA artefacts to Tomcat OTA
 	  ##START
+	  if [ ! -d "$KCI_TOMCAT_OTA_DIR" ]; then
+		mkdir -p $KCI_TOMCAT_OTA_DIR
+	  fi
 	  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
 		echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to Tomcat"
 		echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
 		cd $OTA_TEMP_DIR/$OTA_SUB_DIR
 		echo "Now Issuing the following cp command on Tomcat"
+		if [ ! -d "$KCI_TOMCAT_OTA_DIR/$TGT_DIR" ]; then
+			mkdir -p $KCI_TOMCAT_OTA_DIR/$TGT_DIR
+		fi
 		echo "cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR "
-		cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR 
+		cp $TGT_DIR $KCI_TOMCAT_OTA_DIR/$TGT_DIR 
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/"
 		ls $KCI_TOMCAT_OTA_DIR/
-		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$JOB_NAME/"
-		ls $KCI_TOMCAT_OTA_DIR/$JOB_NAME/
-		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR/"
-		ls $KCI_TOMCAT_OTA_DIR/$JOB_NAME/$TGT_DIR/
+		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$TGT_DIR/"
+		ls $KCI_TOMCAT_OTA_DIR/$TGT_DIR/
 
 		echo "Done with attempt to publish to Tomcat!!"
 	  else
