@@ -411,8 +411,9 @@ if [ "$#" -eq 4 ]; then
 		xcodebuild archive -project ${PROJDIR}/VMAppWithKonylib.xcodeproj -scheme KRelease -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive
 
 		##Step 3 - Export Xcode Archive and Generate IPA
-		echo "Performing xcodebuild Export with project archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive, exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} and exportProvisioningProfile ${PRO_PROFILE_NAME}"
+		##echo "Performing xcodebuild Export with project archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive, exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} and exportProvisioningProfile ${PRO_PROFILE_NAME}"
 		##xcodebuild -exportArchive -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive -exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} -exportFormat IPA -exportProvisioningProfile "${PRO_PROFILE_NAME}"
+		echo "Performing xcodebuild Export with project archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive, exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} and exportOptionsPlist ${exportOptionsPlist_file}"
 		## Start - Added the below line as Xcode options for Export to IPA is changed from Xcode7 (Optional) and from Xcode8.3(mandatory)
 		## Now the IPA is created as KRelease.ipa or KDebug.ipa based on the Target selected. so it needs to be renamed
 		xcodebuild -exportArchive -exportOptionsPlist  ${DIR}/AutomationFiles/$exportOptionsPlist_file -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive -exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}
