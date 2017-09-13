@@ -104,7 +104,7 @@ if [ "$#" -eq 1 ]; then
 		winPropertyFileName=`echo ${appidkey}_Config_Win.properties`
 		echo "winPropertyFileName ::  $winPropertyFileName"
 		
-		common_config_file_path="MASTER_COMMON_CONFIG_FILE_PATH/ci_config"
+		common_config_file_path="${MASTER_COMMON_CONFIG_FILE_PATH}/ci_config"
 		
 		echo "common_config_file_path ::  $common_config_file_path"
 		
