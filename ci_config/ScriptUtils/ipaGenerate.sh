@@ -233,7 +233,7 @@ if [ "$#" -eq 4 ]; then
 		## Added the below line as Xcode options for Export to IPA is changed from Xcode7 (Optional) and from Xcode8.3(mandatory)
 		echo "Copy latest exportOptionsPlist config file"
 		cp $jenkins_autofiles_dir/$exportOptionsPlist_file ${DIR}/AutomationFiles
-		echo "Done with copying exportOptionsPlist config file"
+		echo "Done with copying exportOptionsPlist config file named:$exportOptionsPlist_file"
 
 		if [ -f "${JENKINS_OUTPUT_BINARY_DIR}/$renamed_iphone_installer.KAR" ]
 		then
@@ -414,7 +414,7 @@ if [ "$#" -eq 4 ]; then
 		echo "Performing xcodebuild Export with project archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive, exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} and exportProvisioningProfile ${PRO_PROFILE_NAME}"
 		##xcodebuild -exportArchive -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive -exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} -exportFormat IPA -exportProvisioningProfile "${PRO_PROFILE_NAME}"
 		## Start - Added the below line as Xcode options for Export to IPA is changed from Xcode7 (Optional) and from Xcode8.3(mandatory)
-		xcodebuild -exportArchive -exportOptionsPlist "${exportOptionsPlist_file}" -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive -exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name}
+		xcodebuild -exportArchive -exportOptionsPlist  ${DIR}/AutomationFiles/$exportOptionsPlist_file -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive -exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name}
 		##End of change
 		
 		echo "Checking timestamp after XCode build"
