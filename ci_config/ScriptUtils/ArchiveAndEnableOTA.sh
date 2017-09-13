@@ -1,6 +1,6 @@
 ##USAGE
 ##Latest Usage Example as below
-##./ArchiveAndEnableOTA.sh EnergyCountMain KCI KCI 10 /Users/madhav/KCICIScripts/OTA/KCI-OTA EnergyCount /Users/madhav/KCICIScripts/OTA/testOTA/binaries/iphone KCI_10.ipa /Users/madhav/KCICIScripts/OTA/testOTA/binaries/ipad KCI_10.ipa /Users/madhav/KCICIScripts/OTA/testOTA/binaries/android luavmandroid.apk /Users/madhav/KCICIScripts/OTA/testOTA/binaries/androidTab luavmandroid.apk /Users/madhav/KCICIScripts/OTA/testOTA/binaries/windows8 windows8.xap /Users/madhav/KCICIScripts/OTA/testOTA/binaries/windows81 windows81.xap /Users/madhav/KCICIScripts/OTA/testOTA/templates com.kone.containerapp TestProj iphone,ipad,android,androidT,win8,win81 DetailsOfBuildCanBeSeenAsBelow s3://kony-ci0001-storage1 KCI/GEM http://kony-ci0001-storage1.s3-website-eu-west-1.amazonaws.com true ios ios
+##./ArchiveAndEnableOTA.sh Job_Name KCI KCI 10 /Users/madhav/KCICIScripts/OTA/KCI-OTA Job_Name_For_Sub_DirName /Users/madhav/KCICIScripts/OTA/testOTA/binaries/iphone KCI_10.ipa /Users/madhav/KCICIScripts/OTA/testOTA/binaries/ipad KCI_10.ipa /Users/madhav/KCICIScripts/OTA/testOTA/binaries/android luavmandroid.apk /Users/madhav/KCICIScripts/OTA/testOTA/binaries/androidTab luavmandroid.apk /Users/madhav/KCICIScripts/OTA/testOTA/binaries/windows8 windows8.xap /Users/madhav/KCICIScripts/OTA/testOTA/binaries/windows81 windows81.xap /Users/madhav/KCICIScripts/OTA/testOTA/templates com.kone.containerapp TestProj iphone,ipad,android,androidT,win8,win81 DetailsOfBuildCanBeSeenAsBelow s3://kony-ci0001-storage1 KCI/GEM http://kony-ci0001-storage1.s3-website-eu-west-1.amazonaws.com true ios ios
 
 ###############################################################
 #                     ArchiveAndEnableOTA		              #
@@ -232,6 +232,7 @@ if [ "$#" -eq 30 ]; then
     echo "Folder $OTA_TEMP_DIR does not exist!"
     echo "Creating folder $OTA_TEMP_DIR"
     mkdir -p $OTA_TEMP_DIR
+    chmod -R 777 "$OTA_TEMP_DIR"
     if [ -d "$OTA_TEMP_DIR" ]; then
       echo "Created folder $OTA_TEMP_DIR"
     else
@@ -271,7 +272,8 @@ if [ "$#" -eq 30 ]; then
     echo "$NOTIFICATION_FOLDER exists"
     #Copy template index file to the target OTA folder
     echo "Copying template index.html file to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
-    cp "$NOTIFICATION_FOLDER/index_orig.html" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/index.html
+    cp "$NOTIFICATION_FOLDER/index_orig.html" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/index.html" 
+    chmod 777 "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/index.html"
     INDEX_FILE="$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/index.html"
     echo "INDEX_FILE => $INDEX_FILE"
 
@@ -1008,7 +1010,7 @@ if [ "$#" -eq 30 ]; then
 	    echo "DONE with Tomcat Publish!!!"
 	fi
 	
-   #Code to get rid of OTA_TEMP_DIR
+   #Code to remove contents of OTA_TEMP_DIR
    #Checking if the OTA_TEMP_DIR exists
    if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then	
 		echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
@@ -1037,7 +1039,7 @@ if [ "$#" -eq 30 ]; then
 	else
 		echo "Folder doesn't exists"
 	fi
-	#End of code to get rid of OTA_TEMP_DIR.
+	#End of code to remove contents of OTA_TEMP_DIR.
 	
 else
   echo "Error:: Wrong number of parameters, check again!! $# number of parameters have been entered!!"
