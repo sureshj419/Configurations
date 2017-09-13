@@ -334,7 +334,7 @@ if [ "$#" -eq 4 ]; then
 		echo "CODE_SIGN_ENTITLEMENTS=$entitlements_file\r\nPROVISIONING_PROFILE=$PROVISIONING_PROFILE\r\nPROVISIONING_PROFILE[sdk\=iphoneos*]=$PROVISIONING_PROFILE\r\nCODE_SIGN_IDENTITY=$DEVELOPER_NAME\r\nCODE_SIGN_IDENTITY[sdk\=iphoneos*]=$DEVELOPER_NAME\r\nDEVELOPMENT_TEAM=$DEVELOPMENT_TEAM" >> $xcodeConfig_file
 		
 		echo "Running the xCode Automation tool to make the xCode and Info.Plist changes"
-		java -jar xCodeAutomation.jar Info.Plist_Config.json currBuildInfoPlistXml.xml XCodeCurBuildProperties.xml "$xcodeConfig_file" "$KCI_GEN_IPA_TASK_XCODE_VERSION" $IOS_ENTITLEMENTS_REQUIRED "$entitlements_file" "$bundlekey"
+		java -jar xCodeAutomation.jar "$infoPlistConfig_file" currBuildInfoPlistXml.xml XCodeCurBuildProperties.xml "$xcodeConfig_file" "$KCI_GEN_IPA_TASK_XCODE_VERSION" $IOS_ENTITLEMENTS_REQUIRED "$entitlements_file" "$bundlekey"
 
 		
 #Converting the .xml files of xcode project settings to project.pbxproj and Info.plist.
