@@ -135,6 +135,11 @@ if [ "$#" -eq 1 ]; then
 				echo "Copying xcode_configs Plist_Config file successfull"
 			fi
 			
+			if [ -f "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE ]; then
+				cp "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE $common_config_file_path/ScriptUtils/xcode_configs/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE
+				echo "Copying xcode_configs exportOptionsPlist file successfull"
+			fi
+			
 			cd "$workspaceNew"
 			echo "Removing the old config folder in worksapce"
 			rm -rf ci_config
