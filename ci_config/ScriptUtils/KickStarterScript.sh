@@ -130,14 +130,19 @@ if [ "$#" -eq 1 ]; then
 				echo "Copying projectprop file successfull"
 			fi
 			
-			if [ -f "$WORKSPACE/ci_config"/Info.Plist_Config.json ]; then
-				cp "$WORKSPACE/ci_config"/Info.Plist_Config.json $common_config_file_path/ScriptUtils/xcode_configs/Info.Plist_Config.json
+			if [ -f "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_INFOPLIST_CONFIG_PATH ]; then
+				cp "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_INFOPLIST_CONFIG_PATH $common_config_file_path/ScriptUtils/xcode_configs/$KCI_GEN_IPA_TASK_INFOPLIST_CONFIG_PATH
 				echo "Copying xcode_configs Plist_Config file successfull"
 			fi
 			
 			if [ -f "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE ]; then
 				cp "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE $common_config_file_path/ScriptUtils/xcode_configs/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE
 				echo "Copying xcode_configs exportOptionsPlist file successfull"
+			fi
+			
+			if [ -f "$WORKSPACE/ci_config"/$IOS_ENTITLEMENTS_FILE ]; then
+				cp "$WORKSPACE/ci_config"/$IOS_ENTITLEMENTS_FILE $common_config_file_path/ScriptUtils/xcode_configs/$IOS_ENTITLEMENTS_FILE
+				echo "Copying xcode_configs IOS_ENTITLEMENTS_FILE:$IOS_ENTITLEMENTS_FILE file successfull"
 			fi
 			
 			cd "$workspaceNew"
