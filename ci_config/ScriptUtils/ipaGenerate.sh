@@ -408,7 +408,7 @@ if [ "$#" -eq 4 ]; then
 
 		##Step 2 - Create Xcode Archive
 		echo "Performing xcodebuild Archive with project ${PROJDIR}/VMAppWithKonylib.xcodeproj and archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive"
-		xcodebuild archive -project ${PROJDIR}/VMAppWithKonylib.xcodeproj -scheme KRelease -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive
+		xcodebuild archive -project ${PROJDIR}/VMAppWithKonylib.xcodeproj -scheme ${SCHEME} -archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive
 
 		##Step 3 - Export Xcode Archive and Generate IPA
 		##echo "Performing xcodebuild Export with project archivePath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${PROJECT_NAME}.xcarchive, exportPath ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${ipa_name} and exportProvisioningProfile ${PRO_PROFILE_NAME}"
