@@ -254,7 +254,7 @@ if [ "$#" -eq 6 ]; then
 	
 	if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
 				if [ -d "$project_dir/binaries/iphone" ]; then
-					if [ -f "$project_dir/binaries/iphone/$KCI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.kar" ]; then
+					if [ -f "$project_dir/binaries/iphone/$KCI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.KAR" ]; then
 						iPhoneBuild="true"
 					else
 						build_Status="false"
@@ -264,7 +264,7 @@ if [ "$#" -eq 6 ]; then
 			
 			if [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
 				if [ -d "$project_dir/binaries/ipad" ]; then
-					if [ -f "$project_dir/binaries/ipad/$KCI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.kar" ]; then
+					if [ -f "$project_dir/binaries/ipad/$KCI_GEN_IPA_TASK_IOS_IPAD_ORIG_KAR_FILE_NAME.KAR" ]; then
 						iPadBuild="true"
 					else
 						build_Status="false"

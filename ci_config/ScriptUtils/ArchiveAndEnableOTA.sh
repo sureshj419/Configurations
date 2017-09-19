@@ -375,7 +375,7 @@ if [ "$#" -eq 30 ]; then
             # Now copy iphone related artefacts under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphone folder
             echo "Now attempting to copy iphone artefacts to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME folder"
 
-            IPHONE_KAR=$(echo ${IPHONE_BINARY_NAME}_${BUILD_NO}.kar)
+            IPHONE_KAR=$(echo ${IPHONE_BINARY_NAME}_${BUILD_NO}.KAR)
             echo "IPHONE_BINARY => $IPHONE_BINARY"
             echo "IPHONE_KAR => $IPHONE_KAR"
             echo "Copying iphone mobile kar and binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME folder"
@@ -481,7 +481,7 @@ if [ "$#" -eq 30 ]; then
             # Now copy iphone related artefacts under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/ipad folder
             echo "Now attempting to copy iphone artefacts to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME folder"
 
-            IPHONE_TAB_KAR=$(echo ${IPHONE_TAB_BINARY_NAME}_${BUILD_NO}.kar)
+            IPHONE_TAB_KAR=$(echo ${IPHONE_TAB_BINARY_NAME}_${BUILD_NO}.KAR)
             echo "IPHONE_TAB_BINARY => $IPHONE_TAB_BINARY"
             echo "IPHONE_TAB_KAR => $IPHONE_TAB_KAR"
             echo "Copying iphone tablet kar and binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME folder"

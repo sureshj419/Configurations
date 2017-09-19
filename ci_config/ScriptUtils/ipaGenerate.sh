@@ -104,7 +104,7 @@ if [ "$#" -eq 4 ]; then
 		ipa_name="$renamed_iphone_installer"
 		echo "ipa_name => ${ipa_name}.ipa"
 		kar_name="$renamed_iphone_installer"
-		echo "kar_name => ${kar_name}.kar"
+		echo "kar_name => ${kar_name}.KAR"
 		DIR="$KCI_GEN_IPA_TASK_MAC_PLUGIN_PATH"
 		echo "DIR => ${DIR}"
 		BUILDDIR="$KCI_GEN_IPA_TASK_MAC_DIR_FOR_BUILDS"
@@ -281,21 +281,21 @@ if [ "$#" -eq 4 ]; then
 		echo "The current directory is `pwd`"
 		lzldkar_name="${kar_name}"
 
-		if [ -f "${lzldkar_name}.kar" ]
+		if [ -f "${lzldkar_name}.KAR" ]
 		then
-			echo "$lzldkar_name.kar found."
+			echo "$lzldkar_name.KAR found."
 			if [ -d "${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}" ]; then
 				rm -rf ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}
 			fi
 			mkdir -p ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}
-			if [ -f "${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${lzldkar_name}.kar" ]	
+			if [ -f "${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${lzldkar_name}.KAR" ]	
 			then
-				rm -rf ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${lzldkar_name}.kar
+				rm -rf ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}/${lzldkar_name}.KAR
 			fi
 			echo "copying $lzldkar_name.kar to ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}"
-			cp $lzldkar_name.kar ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}
+			cp $lzldkar_name.KAR ${JENKINS_OUTPUT_BINARY_DIR}/$JOB_NAME/build${IPA_BUILD_NUMBER}
 		else
-			echo "$lzldkar_name.kar not found."
+			echo "$lzldkar_name.KAR not found."
 		fi
 		echo "changing directory to gen directory"
 		cd $(echo $GENDIR | tr -d '\r')
