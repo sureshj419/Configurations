@@ -37,7 +37,15 @@ if [ "$#" -eq 6 ]; then
     echo "WIN_workspace.location::${WIN_workspace_location}"
     echo "KCI_GEN_IPA_TASK_PRO_PROFILE:: ${KCI_GEN_IPA_TASK_PRO_PROFILE}"
     echo "KCI_GEN_IPA_TASK_PRO_PROFILE_NAME:: ${KCI_GEN_IPA_TASK_PRO_PROFILE_NAME}"
-
+	
+	echo "Before update BuildMachineOS:: $BuildMachineOS"
+	if [ "$BuildMachineOS" = "${BUILD_MACHINE_LABEL_IOS}" ]; then
+		$BuildMachineOS="ios"
+	else
+		$BuildMachineOS="windows"
+	fi
+	echo "After update BuildMachineOS:: $BuildMachineOS"
+	
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - COPY NECESSARY FILES - START"
 		#ws_loc=`printenv workspace.location`
@@ -224,13 +232,14 @@ if [ "$#" -eq 6 ]; then
 
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - START"
-
+		
 		echo "KCI_UI_LOCAL_MODULE_DIR ::$KCI_UI_LOCAL_MODULE_DIR"
 
 		cd ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR
 		pwd
+		echo "Removing Binaries folder inside the Project workspace before the Build Process"
+		rm -rf binaries
 		$KCI_ANT_CMD #command "ant" is given to trigger the build.
-		
 
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - END"
 		echo "************************************************************"
