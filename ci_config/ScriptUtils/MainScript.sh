@@ -39,7 +39,7 @@ if [ "$#" -eq 6 ]; then
     echo "KCI_GEN_IPA_TASK_PRO_PROFILE_NAME:: ${KCI_GEN_IPA_TASK_PRO_PROFILE_NAME}"
 	
 	echo "Before update BuildMachineOS:: $BuildMachineOS"
-	if [ "$BuildMachineOS" = "${BUILD_MACHINE_LABEL_IOS}" ]; then
+	if [ "$BuildMachineOS" = "${KCI_SLAVE1_NODE_LABEL}" ]; then
 		$BuildMachineOS="ios"
 	else
 		$BuildMachineOS="windows"
