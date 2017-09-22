@@ -125,7 +125,7 @@ if [ "$#" -eq 1 ]; then
 				echo "Copying keystore file successfull"
 			fi
 			
-			if [ -f "$WORKSPACE"/$KCI_PRJ_PROP_XML ]; then
+			if [ -f "$WORKSPACE/ci_config"/$KCI_PRJ_PROP_XML ]; then
 				cp "$WORKSPACE/ci_config"/$KCI_PRJ_PROP_XML $common_config_file_path/ScriptUtils/Prop/$KCI_PRJ_PROP_XML
 				echo "Copying projectprop file successfull"
 			fi
