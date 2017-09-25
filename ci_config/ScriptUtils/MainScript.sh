@@ -517,6 +517,7 @@ if [ "$#" -eq 6 ]; then
 		if [ $BUILD_FOR_WINDOWS8_RC_CLIENT = "true" ]; then
 			mv $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$KCI_GEN_WINDOWS8_ORIG_FILE_NAME $project_dir/$KCI_GEN_WINDOWS8_BINARY_DIR/$WIN_NAME.xap
 		else
+			#Commented below line since the build_Status should not be set to false here rather we should assume that build itself has been marked to false
 			#build_Status="false"
 			echo "BUILD_FOR_WINDOWS8_RC_CLIENT property has been set to false, hence skipping Repackaging of XAP task"
 		fi
@@ -542,10 +543,12 @@ if [ "$#" -eq 6 ]; then
 
 		echo "Workspace Location on slave ::${ws_loc}"
 		
+		echo "build_Status=$build_Status"
 	#Condition to check if binaries are not generated and sending emails for the job failure.
 	if [ $build_Status = "false" ]; then
 		#Code for generating the email if the main job fails.
 		#Creating the parameter to assign the index_fail.html file location.
+		echo "Printing PROP_ROOT_DIR/JOB_NAME..."
 		echo "$PROP_ROOT_DIR/$JOB_NAME"			
 		echo "$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"
 		Template_FOLDER="$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"

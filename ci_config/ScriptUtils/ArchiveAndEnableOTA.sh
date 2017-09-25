@@ -231,7 +231,7 @@ if [ "$#" -eq 30 ]; then
   else
     echo "Folder $OTA_TEMP_DIR does not exist!"
     echo "Creating folder $OTA_TEMP_DIR"
-    mkdir -p $OTA_TEMP_DIR
+    mkdir -p "$OTA_TEMP_DIR"
     chmod -R 777 "$OTA_TEMP_DIR"
     if [ -d "$OTA_TEMP_DIR" ]; then
       echo "Created folder $OTA_TEMP_DIR"
@@ -379,19 +379,21 @@ if [ "$#" -eq 30 ]; then
             echo "IPHONE_BINARY => $IPHONE_BINARY"
             echo "IPHONE_KAR => $IPHONE_KAR"
             echo "Copying iphone mobile kar and binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME folder"
-            cp "$IPHONE_BINARY_PATH/$IPHONE_KAR" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_KAR
-            cp "$IPHONE_BINARY_PATH/$IPHONE_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY
+	    cp "$IPHONE_BINARY_PATH/$IPHONE_KAR" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_KAR"
+	    ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/"
+            cp "$IPHONE_BINARY_PATH/$IPHONE_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY"
+            ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/"
 
-            if [ -f "$IPHONE_BINARY_PATH/$IPHONE_BINARY" ]; then
+            if [ -f "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY" ]; then
               echo "Successfully copied $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPHONE_BINARY_LABEL value is set to :: $IPHONE_BINARY_LABEL"
             else
-              echo "Could not copy $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
+              echo "Could not copy $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPHONE_BINARY_LABEL value to :: $IPHONE_BINARY_LABEL"
             fi
-            if [ -f "$IPHONE_BINARY_PATH/$IPHONE_KAR" ]; then
+            if [ -f "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_KAR" ]; then
               echo "Successfully copied $IPHONE_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_KAR_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPHONE_KAR_LABEL value is set to :: $IPHONE_KAR_LABEL"
@@ -403,7 +405,9 @@ if [ "$#" -eq 30 ]; then
 
             ## Copy iphone plist template file to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder
             echo "Copying iphone.plist template file to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
-            cp "$TEMPLATE_FILES_PATH/iphone_orig.plist" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphone.plist
+            cp "$TEMPLATE_FILES_PATH/iphone_orig.plist" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphone.plist"
+	    chmod 777 "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphone.plist"
+	    ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/"
             echo "IPHONE_PLIST_FILE => $IPHONE_PLIST_FILE"
             echo "IPHONE_STRING => $IPHONE_STRING"
             if [ -f "$IPHONE_PLIST_FILE" ]; then
@@ -485,8 +489,8 @@ if [ "$#" -eq 30 ]; then
             echo "IPHONE_TAB_BINARY => $IPHONE_TAB_BINARY"
             echo "IPHONE_TAB_KAR => $IPHONE_TAB_KAR"
             echo "Copying iphone tablet kar and binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME folder"
-            cp "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_KAR" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME/$IPHONE_TAB_KAR
-            cp "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME/$IPHONE_TAB_BINARY
+            cp "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_KAR" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME/$IPHONE_TAB_KAR"
+            cp "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME/$IPHONE_TAB_BINARY"
             ## Insert code here to check if the iphone tab binary and kar file got copied to the intended folder
             if [ -f "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" ]; then
               echo "Successfully copied $IPHONE_TAB_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
@@ -509,7 +513,7 @@ if [ "$#" -eq 30 ]; then
 
             ## Copy iphone tab plist template file to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder
             echo "Copying iphoneT.plist template file to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
-            cp "$TEMPLATE_FILES_PATH/iphoneT_orig.plist" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphoneT.plist
+            cp "$TEMPLATE_FILES_PATH/iphoneT_orig.plist" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphoneT.plist"
             echo "IPHONE_TAB_PLIST_FILE => $IPHONE_TAB_PLIST_FILE"
             echo "IPHONE_TAB_STRING => $IPHONE_TAB_STRING"
             if [ -f "$IPHONE_TAB_PLIST_FILE" ]; then
@@ -597,7 +601,7 @@ if [ "$#" -eq 30 ]; then
              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME folder is in place"
              echo "ANDROID_BINARY => $ANDROID_BINARY"
              echo "Copying android mobile binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME folder"
-             cp "$ANDROID_BINARY_PATH/$ANDROID_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY
+             cp "$ANDROID_BINARY_PATH/$ANDROID_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY"
              if [ -f "$ANDROID_BINARY_PATH/$ANDROID_BINARY" ]; then
                echo "Successfully copied $ANDROID_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY location"
                ANDROID_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -652,7 +656,7 @@ if [ "$#" -eq 30 ]; then
              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_TAB_FOLDER_NAME folder is in place"
              echo "ANDROID_TAB_BINARY => $ANDROID_TAB_BINARY"
              echo "Copying android tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_TAB_FOLDER_NAME folder"
-             cp "$ANDROID_TAB_BINARY_PATH/$ANDROID_TAB_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_TAB_FOLDER_NAME/$ANDROID_BINARY
+             cp "$ANDROID_TAB_BINARY_PATH/$ANDROID_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_TAB_FOLDER_NAME/$ANDROID_BINARY"
              if [ -f "$ANDROID_TAB_BINARY_PATH/$ANDROID_TAB_BINARY" ]; then
                echo "Successfully copied $ANDROID_TAB_BINARY to $ANDROID_TAB_BINARY_PATH location"
                ANDROID_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -728,7 +732,7 @@ if [ "$#" -eq 30 ]; then
              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_FOLDER_NAME folder is in place"
              echo "WINDOWS8_BINARY => $WINDOWS8_BINARY"
              echo "Copying windows8 mobile binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_FOLDER_NAME folder"
-             cp "$WINDOWS8_BINARY_PATH/$WINDOWS8_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_FOLDER_NAME/$WINDOWS8_BINARY
+             cp "$WINDOWS8_BINARY_PATH/$WINDOWS8_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_FOLDER_NAME/$WINDOWS8_BINARY"
              if [ -f "$WINDOWS8_BINARY_PATH/$WINDOWS8_BINARY" ]; then
                echo "Successfully copied $WINDOWS8_BINARY to $WINDOWS8_BINARY_PATH location"
                WINDOWS8_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -782,7 +786,7 @@ if [ "$#" -eq 30 ]; then
       #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder is in place"
       #        echo "WINDOWS8_TAB_BINARY => $WINDOWS8_TAB_BINARY"
       #        echo "Copying windows8 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder"
-      #        cp "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY
+      #        cp "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY"
                 # if [ -f "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" ]; then
                 #   echo "Successfully copied $WINDOWS8_TAB_BINARY to $WINDOWS8_TAB_BINARY_PATH location"
                 #   WINDOWS8_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -839,7 +843,7 @@ if [ "$#" -eq 30 ]; then
              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_FOLDER_NAME folder is in place"
              echo "WINDOWS81_BINARY => $WINDOWS81_BINARY"
              echo "Copying windows8.1 mobile binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_FOLDER_NAME folder"
-             cp "$WINDOWS81_BINARY_PATH/$WINDOWS81_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_FOLDER_NAME/$WINDOWS81_BINARY
+             cp "$WINDOWS81_BINARY_PATH/$WINDOWS81_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_FOLDER_NAME/$WINDOWS81_BINARY"
              if [ -f "$WINDOWS81_BINARY_PATH/$WINDOWS81_BINARY" ]; then
                echo "Successfully copied $WINDOWS81_BINARY to $WINDOWS81_BINARY_PATH location"
                WINDOWS81_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -893,7 +897,7 @@ if [ "$#" -eq 30 ]; then
       #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder is in place"
       #        echo "WINDOWS81_TAB_BINARY => $WINDOWS81_TAB_BINARY"
       #        echo "Copying windows8.1 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder"
-      #        cp "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY
+      #        cp "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY"
                 # if [ -f "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" ]; then
                 #   echo "Successfully copied $WINDOWS81_TAB_BINARY to $WINDOWS81_TAB_BINARY_PATH location"
                 #   WINDOWS81_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
@@ -959,21 +963,33 @@ if [ "$#" -eq 30 ]; then
   fi
 
   	if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
+  	echo "Listing the OTA contents"
+  	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/"
+  	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME"
+  	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME"
 	  ## Publish the created OTA artefacts to S3 bucket
 	  ##START
 	  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
-		echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
+	  	echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
 		echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
 		cd $OTA_TEMP_DIR/$OTA_SUB_DIR
 		echo "Now Issuing the following cp command on S3"
-		echo "aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
-		aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
+	    #echo "aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
+	    #aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
+	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
+	    #aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
+	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
+	    #aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
+	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
+	    #aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
+	    echo "AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
+	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
 		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
-		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
+	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
 		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
-		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
+	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
 		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
-		aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
+	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
 
 		echo "Done with attempt to publish to s3 bucket!!"
 	  else

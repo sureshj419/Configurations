@@ -66,6 +66,10 @@ if [ "$#" -eq 4 ]; then
 
 		mac_pwd="$KCI_GEN_IPA_TASK_MAC_PWD"
 		jenkins_autofiles_dir="$KCI_GEN_IPA_TASK_AUTOMATION_FILES_PATH"
+		#Updated below properties with new values to accomodate the latest script changes
+		#xcode_updater_jar="$XCODE_CONFIG_UPDATER_JAR"
+		#infoPlistConfig_file="$INFOPLIST_CONFIG_FILE"
+		#xcodeConfig_file="Config.properties"
 		xcode_updater_jar="$KCI_GEN_IPA_TASK_XCODE_UPDATER_JAR"
 		infoPlistConfig_file="$KCI_GEN_IPA_TASK_INFOPLIST_CONFIG_PATH"
 		exportOptionsPlist_file="$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE"
@@ -299,6 +303,7 @@ if [ "$#" -eq 4 ]; then
 		fi
 		echo "changing directory to gen directory"
 		cd $(echo $GENDIR | tr -d '\r')
+		echo "The current directory is `pwd`"
 		echo "**********Printing the perl extract command"
 
 		echo "running perl extract command - existing one"
