@@ -585,7 +585,7 @@ if [ "$#" -eq 6 ]; then
 		cp -R $project_dir/binaries $WORKSPACE
 		
 		echo "Removing the Project Workspace binaries as they are copied to Job Workspace"
-		rm -f $project_dir/binaries
+		rm -rf $project_dir/binaries
 		
 		if [ $BUILD_FOR_ANDROID_MOBILE = "true" ]; then
 			cd  $WORKSPACE/binaries/android
