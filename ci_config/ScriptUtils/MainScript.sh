@@ -1,6 +1,6 @@
 #!/bin/sh
 ###############################################################
-#                 MainScript		                          #
+#                 MainScript		                      #
 ###############################################################
 # Purpose:
 # Purpose of this file is to trigger the build on slave,      #
@@ -37,26 +37,38 @@ if [ "$#" -eq 6 ]; then
     echo "WIN_workspace.location::${WIN_workspace_location}"
     echo "KCI_GEN_IPA_TASK_PRO_PROFILE:: ${KCI_GEN_IPA_TASK_PRO_PROFILE}"
     echo "KCI_GEN_IPA_TASK_PRO_PROFILE_NAME:: ${KCI_GEN_IPA_TASK_PRO_PROFILE_NAME}"
-	
-	echo "Before update BuildMachineOS:: $BuildMachineOS"
+    
+    echo "Before update BuildMachineOS:: $BuildMachineOS"
 	if [ "$BuildMachineOS" = "${KCI_SLAVE1_NODE_LABEL}" ]; then
-		$BuildMachineOS="ios"
+		BuildMachineOS="ios"
 	else
-		$BuildMachineOS="windows"
+		BuildMachineOS="windows"
 	fi
-	echo "After update BuildMachineOS:: $BuildMachineOS"
-	
+     echo "After update BuildMachineOS:: $BuildMachineOS"
+
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - COPY NECESSARY FILES - START"
 		#ws_loc=`printenv workspace.location`
 		#ws_loc="${workspace_location}"
-		ws_loc="$WORKSPACE/workspace"
+		#ws_loc="$WORKSPACE/workspace"
+		#Due to the long path in Windows, sometimes Android Build throws File Crunch Error so modified the workspace to a simple path
+		if [ "$BuildMachineOS" = "ios" ]; then
+			ws_loc="$WORKSPACE/workspace"
+		else
+			echo "Visualizer workspace: ${WIN_workspace_location}"
+			echo "Copying the downloaded Project to Visualizer Workspace"
+			rm -rf ${workspace_location}/${KCI_UI_LOCAL_MODULE_DIR}
+			cp -r "$WORKSPACE/workspace"/${KCI_UI_LOCAL_MODULE_DIR} ${workspace_location}
+			ws_loc="${workspace_location}"
+		fi
+		
 		echo "${ws_loc}"
 		echo "Printing workspace location :::"$ws_loc
 		cd ${ws_loc}
-
 		pwd
-		
+		echo "listing the file in the workspace"
+		ls
+		rm -rf HeadlessBuild-Global.properties
 		eclipse_equinox=`printenv eclipse.equinox.path`
 		echo "eclipse_equinox ::$eclipse_equinox"
 		imagemagic_home=`printenv imagemagic.home`
@@ -64,7 +76,7 @@ if [ "$#" -eq 6 ]; then
 		android_home=`printenv android.home`
 		echo "android_home ::$android_home"
 		
-		rm HeadlessBuild-Global.properties
+		
 		if [ "$KCI_MACHINE_LABEL" = "windows" ]; then
 			finalString=$(echo ${ws_loc} | sed 's/\\/\//g')
 			echo $finalString
@@ -103,7 +115,7 @@ if [ "$#" -eq 6 ]; then
 
 		pluginPropertyFile="${PLUGIN_PROPERTIES_FILE}/PLUGIN_DEPENDENCY_STATUS.properties"
 		
-#		Reading the file to get the visualizer version details for the respective project.
+		#Reading the file to get the visualizer version details for the respective project.
 		if [ -f "$pluginPropertyFile" ]; then
 			echo "The property file $pluginPropertyFile found."
 
@@ -141,7 +153,15 @@ if [ "$#" -eq 6 ]; then
 			echo "Printing JAVA_HOME :: "$JAVA_HOME
 			export GRADLE_HOME=$WIN_GRADLE_HOME
 			echo "Printing GRADLE_HOME :: "$GRADLE_HOME
-			export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
+			if [ "$KCI_CORDOVA_ENABLED" = "true" ]; then
+			  export CORDOVA_HOME=$WIN_CORDOVA_HOME
+			  echo "Printing CORDOVA_HOME :: "$CORDOVA_HOME
+			  export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin:$CORDOVA_HOME
+			else
+			  export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
+			fi			
+			#export PATH=$PATH:/usr/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
+			
 		fi
 		#Path settings for mac slave
 		if [ "$KCI_MACHINE_LABEL" == "ios" ]; then
@@ -160,7 +180,15 @@ if [ "$#" -eq 6 ]; then
 			#fi
 			export JAVA_HOME=$MAC_JAVA_HOME
 		    echo "Printing JAVA_HOME :: "$JAVA_HOME
-		    export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
+		    if [ "$KCI_CORDOVA_ENABLED" = "true" ]; then
+		      export CORDOVA_HOME=$MAC_CORDOVA_HOME
+		      echo "Printing CORDOVA_HOME :: "$CORDOVA_HOME
+		      export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin:$CORDOVA_HOME
+		    else
+		      export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
+		    fi			
+		    
+		    #export PATH=$PATH:$ANT_HOME/bin:$JAVA_HOME/bin:$GRADLE_HOME/bin
 		    echo "Printing path ::"$PATH
 		fi
 		
@@ -171,7 +199,37 @@ if [ "$#" -eq 6 ]; then
 		echo "PRE BUILD ACTIVITIES - UPDATE GLOBAL PROPERTIES WITH ACTUAL VALUES - START"
 
 		CONFIG_FILE=$propertyFile
+		
+        if [[ "$KCI_GEN_USE_CONFIGURED_VERSION_CODE" == '' || $KCI_GEN_USE_CONFIGURED_VERSION_CODE = "false" ]]; then
+            echo "INCREMENTING THE VERSION CODE AS ::: ${PARENT_BUILD_NUMBER}"
+            #Incrementing the Android Version code and iOS Bundle Version based on the KickStarter Build Number
+            sed -i '' "s/\(android\.versioncode=\).*\$/\1${PARENT_BUILD_NUMBER}/" $CONFIG_FILE
+            sed -i '' "s/\(ios\.bundleversion=\).*\$/\1${PARENT_BUILD_NUMBER}/" $CONFIG_FILE
+        fi
+		
+		#Updating the App Name with Japanese chars as Clone has encoding issue
+		#Same command can be used for updating for other apps as well
+		#sed -i '' "s/\(appnamekey=AmwayJapan\).*\$/\appnamekey=セントラル/" $CONFIG_FILE
+		
+		#Added below param for verifying if the Protected mode is to be enabled for Android
+		if [[ "$KCI_ANDROID_PROTECTEDMODE_ENABLED" != '' && $KCI_ANDROID_PROTECTEDMODE_ENABLED = "true" ]]; then		
+ 		  	echo "Adding the Param for Protected Mode for Android"		
+ 			echo "protectedmodeenabled.android=$KCI_ANDROID_PROTECTEDMODE_ENABLED" >> $CONFIG_FILE	
+			echo "Copying Encryption Keys for Protected mode"	
+            #cp -r $KCI_PROPERTIES_ROOT_DIRECTORY/__encryptionkeys ${ws_loc}
+            cp -r ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/ci_config/protectedmode/__encryptionkeys ${ws_loc}
+ 		fi
 
+
+		#Added below param for verifying if the Protected mode is to be enabled for iOS
+		if [[ "$KCI_IOS_PROTECTEDMODE_ENABLED" != '' && $KCI_IOS_PROTECTEDMODE_ENABLED = "true" ]]; then		
+ 		  	echo "Adding the Param for Protected Mode for iOS"		
+ 			echo "protectedmodeenabled.ios=$KCI_IOS_PROTECTEDMODE_ENABLED" >> $CONFIG_FILE		
+			echo "Copying Encryption Keys for Protected mode"	
+            #cp -r $KCI_PROPERTIES_ROOT_DIRECTORY/__encryptionkeys ${ws_loc}
+            cp -r ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/ci_config/protectedmode/__encryptionkeys ${ws_loc}
+ 		fi
+		
 		cd $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR
 		
 		# Modifying the HeadlessBuild.properties , HeadlessBuild-Global.properties,
@@ -189,15 +247,28 @@ if [ "$#" -eq 6 ]; then
 
 		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP version false
 
+		#Added the below 2 lines for setting app version code for Android & iPhone
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP android.versioncode false	
+		
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP ios.bundleversion false 
+		
+		#Added the below 2 lines for setting protected mode for Android & iPhone
+		if [[ "$KCI_ANDROID_PROTECTEDMODE_ENABLED" != '' && $KCI_ANDROID_PROTECTEDMODE_ENABLED = "true" ]]; then
+			java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP protectedmodeenabled.android false
+		fi
+		if [[ "$KCI_IOS_PROTECTEDMODE_ENABLED" != '' && $KCI_IOS_PROTECTEDMODE_ENABLED = "true" ]]; then
+			java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP protectedmodeenabled.ios false 
+		fi
+		
 		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP android.packagename false
 
-		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_server_ip false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_server_ip false
 
-		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_https_port false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_https_port false
 
-		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_web_context false
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP middleware_web_context false
 
-		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP build_mode true
+		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP build.mode true
 
 		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_PROP $KCI_UPDATE_SINGLE $CONFIG_FILE ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_BLD_PROP remove_print_statements true
 
@@ -205,7 +276,7 @@ if [ "$#" -eq 6 ]; then
 
 		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE iphonebundleidentifierkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML iphonebundleidentifierkey
 
-		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE mwaddrkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML mwaddrkey
+		#java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE mwaddrkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML mwaddrkey
 
 		java -jar $KCI_UPDATEPROPS_JAR $KCI_UPDATE_XML $KCI_UPDATE_PROJPROPXML $CONFIG_FILE appidkey ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR/$KCI_PRJ_PROP_XML appidkey
 
@@ -232,7 +303,7 @@ if [ "$#" -eq 6 ]; then
 
 		echo "************************************************************"
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - START"
-		
+
 		echo "KCI_UI_LOCAL_MODULE_DIR ::$KCI_UI_LOCAL_MODULE_DIR"
 
 		cd ${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR
@@ -240,6 +311,7 @@ if [ "$#" -eq 6 ]; then
 		echo "Removing Binaries folder inside the Project workspace before the Build Process"
 		rm -rf binaries
 		$KCI_ANT_CMD #command "ant" is given to trigger the build.
+		
 
 		echo "PRE BUILD ACTIVITIES - PERFORM BUILD FOR TARGETED PLATFORMS - END"
 		echo "************************************************************"
@@ -248,7 +320,7 @@ if [ "$#" -eq 6 ]; then
 		echo "POST BUILD ACTIVITY - CODE SIGN AND GENERATE IPA - START"
 		if [ "$KCI_MACHINE_LABEL" == "ios" ]; then
 
-		echo off
+			echo off
 			echo "BUILD_FOR_IOS_RC_CLIENT ::$BUILD_FOR_IOS_RC_CLIENT"
 			echo "BUILD_FOR_IOS_IPAD_RC_CLIENT ::$BUILD_FOR_IOS_IPAD_RC_CLIENT"
 			echo "${ws_loc}"
@@ -259,9 +331,9 @@ if [ "$#" -eq 6 ]; then
 			build_Status="true" # build_Status parameter is set to true/false based on the binaries generated.
 			
 		
-	# Read the property file and check for which platforms (iphone/ipad) to be build and correspondingly making the particular parameters defined above as either # true or false.	
+			# Read the property file and check for which platforms (iphone/ipad) to be build and correspondingly making the particular parameters defined above as either # true or false.	
 	
-	if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
+			if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
 				if [ -d "$project_dir/binaries/iphone" ]; then
 					if [ -f "$project_dir/binaries/iphone/$KCI_GEN_IPA_TASK_IOS_ORIG_KAR_FILE_NAME.KAR" ]; then
 						iPhoneBuild="true"
@@ -305,11 +377,37 @@ if [ "$#" -eq 6 ]; then
 						./ipaGenerate.sh $propertyFile $BUILD_FOR_IOS_RC_CLIENT $BUILD_FOR_IOS_IPAD_RC_CLIENT $project_dir
 					else 
 						echo "Unable to find the binaries. Hence stop executing ipa generation"	
+						build_Status="false"
 					fi	
 				fi	
 			fi
 		else
 			echo "Build for iOS is false"
+		fi
+		#Validate if the IPA is generated or not. Accordingly set the Build Status for sending mailers
+		TagName="$binaryname"
+		IPA_BUILD_NUMBER="$PARENT_BUILD_NUMBER"
+		IPA_NAME=$(echo $TagName | tr -d '\r')_$(echo $IPA_BUILD_NUMBER | tr -d '\r')
+		echo "Validate if IPA is generated --> "$IPA_NAME
+		if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ]; then
+			if [ -d "$project_dir/binaries/iphone" ]; then
+				if [ -f "$project_dir/binaries/iphone/$IPA_NAME.ipa" ]; then	
+					echo "IPA for iPhone is generated"
+				else
+					echo "IPA  for iPhone is not generated"
+					build_Status="false"
+				fi
+			fi
+		fi
+		if [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
+			if [ -d "$project_dir/binaries/ipad" ]; then
+				if [ -f "$project_dir/binaries/ipad/$IPA_NAME.ipa" ]; then	
+					echo "IPA for iPad is generated"
+				else
+					echo "IPA for iPad is not generated"
+					build_Status="false"
+				fi
+			fi
 		fi
 		
 		echo "POST BUILD ACTIVITY - CODE SIGN AND GENERATE IPA - END"
@@ -373,8 +471,15 @@ if [ "$#" -eq 6 ]; then
 				#$KCI_ANT_CMD $KCI_ANT_MODE
 				#mv $project_dir/binaries/android/luavmandroid.apk $project_dir/binaries/android/$APK_NAME.apk
 				if [ $KCI_ANT_MODE = "release" ]; then 
-					cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
-
+					#Made changes to accomodate changes in path for latest plugins
+					#cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+					if [ $KCI_UNSIGNED_APK_FOR_NEWER_PLUGINS = "true" ]; then
+					   cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_ANT_MODE/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+					else
+					   cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+					fi
+					
+					
 					#If unsigned.apk file exists then copy the keystore and zipalign files to binary folder.
 					if [ -f "$project_dir/binaries/android/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" ]; then
 						echo "APK for mobile found"
@@ -385,7 +490,7 @@ if [ "$#" -eq 6 ]; then
 						#Based on the BuildMachineOS zipalign command is been executed.
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign.exe $project_dir/binaries/android
+							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign_win $project_dir/binaries/android/zipalign.exe
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
 							cp $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/zipalign $project_dir/binaries/android
@@ -425,7 +530,13 @@ if [ "$#" -eq 6 ]; then
 					fi
 				else 
 					if [ $KCI_ANT_MODE = "debug" ]; then 
-						cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
+					        #Made changes to accomodate changes in path for latest plugins
+						#cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
+						if [ $KCI_UNSIGNED_APK_FOR_NEWER_PLUGINS = "true" ]; then
+						   cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_ANT_MODE/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
+						else
+						   cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luaandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-debug.apk" $project_dir/binaries/android/$APK_NAME.apk
+						fi
 					fi
 				fi
 			else
@@ -438,7 +549,7 @@ if [ "$#" -eq 6 ]; then
 			if [ $BUILD_FOR_ANDROID_TABLET = "true" ]; then
 				#mv $project_dir/binaries/tabrcandroid/luavmandroid.apk $project_dir/binaries/tabrcandroid/$APK_NAME.apk
 				if [ $KCI_ANT_MODE = "release" ]; then 
-					cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/tabrcandroid/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
+					cp "${ws_loc}/temp/$KCI_UI_LOCAL_MODULE_DIR/build/luatabrcandroid/dist/$KCI_UI_LOCAL_MODULE_DIR/build/outputs/apk/$KCI_ANT_MODE/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk" $project_dir/binaries/tabrcandroid/$KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 					
 					#If unsigned.apk file exists then copy the keystore and #
 					#zipalign files to binary folder.
@@ -465,7 +576,7 @@ if [ "$#" -eq 6 ]; then
 						
 						#The "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore" 
 						#command is used to sign the android.apk file for android tablet.
-						jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $KCI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $KCI_ANDROID_SIGNING_CERTIFICATE_PASS $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
+						jarsigner -sigalg SHA1withRSA -digestalg SHA1 -keystore $KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME -storepass $KCI_ANDROID_SIGNING_KEYSTORE_PASS -keypass $KCI_ANDROID_SIGNING_CERTIFICATE_PASS $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME
 
 						jarsigner -verify -certs $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $KCI_ANDROID_SIGNING_KEYSTORE_ALIAS_NAME 				
 						
@@ -479,11 +590,11 @@ if [ "$#" -eq 6 ]; then
 						
 						if [ $BuildMachineOS = "windows" ]; then
 							echo "Executing zipalign command on $BuildMachineOS"
-							./zipalign.exe -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign.exe 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						else 
 							echo "Executing zipalign command on $BuildMachineOS"
 							chmod 777 zipalign
-							./zipalign -v 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
+							./zipalign 4 $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk $APK_NAME.apk
 						fi
 						rm -rf $KCI_UI_LOCAL_MODULE_DIR-release-unsigned.apk
 						echo "Signing Android tablet APK file - COMPLETED"
@@ -544,36 +655,38 @@ if [ "$#" -eq 6 ]; then
 		echo "Workspace Location on slave ::${ws_loc}"
 		
 		echo "build_Status=$build_Status"
-	#Condition to check if binaries are not generated and sending emails for the job failure.
-	if [ $build_Status = "false" ]; then
-		#Code for generating the email if the main job fails.
-		#Creating the parameter to assign the index_fail.html file location.
-		echo "Printing PROP_ROOT_DIR/JOB_NAME..."
-		echo "$PROP_ROOT_DIR/$JOB_NAME"			
-		echo "$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"
-		Template_FOLDER="$KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html"
-		#Verifying if the $Template_FOLDER exists.
-		if [ -f "$Template_FOLDER" ]; then
-			echo "$Template_FOLDER exists"
-			echo "started copying the index file"
-			echo "INDEX1_FILE => $Template_FOLDER"
-			#Assinging the values to the index_fail.html.
-			sed -i -e 's|$KCI_UI_SVN_PATH|'"$KCI_UI_SVN_PATH"'|g' $Template_FOLDER
-			sed -i -e 's|$KCI_UI_GIT_BRANCH|'"$KCI_UI_GIT_BRANCH"'|g' $Template_FOLDER
-			sed -i -e 's|$appid|'"$appid"'|g' $Template_FOLDER
-			sed -i -e 's|$iphonebundleidentifierkey|'"$iphonebundleidentifierkey"'|g' $Template_FOLDER
-			sed -i -e 's|$KCI_GEN_IPA_TASK_DEVELOPER_NAME|'"$KCI_GEN_IPA_TASK_DEVELOPER_NAME"'|g' $Template_FOLDER
-			sed -i -e 's|$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME|'"$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME"'|g' $Template_FOLDER
-			#Deleting the created index_fail.html-e file.
-			rm -f $KCI_PROPERTIES_ROOT_DIRECTORY/$JOB_NAME/notification_templates/index_fail.html-e
-		else
-			echo "$Template_FOLDER does not exist"
-			#echo "Exiting...."
-			#exit
+		
+		#Condition to check if binaries are not generated and sending emails for the job failure.
+		if [ $build_Status = "false" ]; then
+			#Code for generating the email if the main job fails.
+			#Creating the parameter to assign the index_fail.html file location.
+			echo "Printing JENKINS_BASE_HOME/KCI_SCRIPTS_DIR..."
+			echo "$JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR"			
+			echo "$JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/../notification_templates/index_fail.html"
+			Template_FOLDER="$JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/../notification_templates/index_fail.html"
+			#Verifying if the $Template_FOLDER exists.
+			if [ -f "$Template_FOLDER" ]; then
+				echo "$Template_FOLDER exists"
+				echo "started copying the index file"
+				echo "INDEX1_FILE => $Template_FOLDER"
+				#Assinging the values to the index_fail.html.
+				sed -i -e 's|$KCI_UI_SVN_PATH|'"$KCI_UI_SVN_PATH"'|g' $Template_FOLDER
+				sed -i -e 's|$KCI_UI_GIT_BRANCH|'"$KCI_UI_GIT_BRANCH"'|g' $Template_FOLDER
+				sed -i -e 's|$appid|'"$appid"'|g' $Template_FOLDER
+				sed -i -e 's|$iphonebundleidentifierkey|'"$iphonebundleidentifierkey"'|g' $Template_FOLDER
+				sed -i -e 's|$KCI_GEN_IPA_TASK_DEVELOPER_NAME|'"$KCI_GEN_IPA_TASK_DEVELOPER_NAME"'|g' $Template_FOLDER
+				sed -i -e 's|$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME|'"$KCI_GEN_IPA_TASK_PRO_PROFILE_NAME"'|g' $Template_FOLDER
+				#Deleting the created index_fail.html-e file.
+				rm -f $JENKINS_BASE_HOME/$KCI_SCRIPTS_DIR/../notification_templates/index_fail.html-e
+			else
+				echo "$Template_FOLDER does not exist"
+				#echo "Exiting...."
+				#exit
+			fi
+			#End of the code for generating the email if the build fails.
+			exit 1
 		fi
-		#End of the code for generating the email if the build fails.
-	fi
-	#End of the condition to check if binaries are not created and sending emails for job failure.
+		#End of the condition to check if binaries are not created and sending emails for job failure.
 
 		project_dir="${ws_loc}/$KCI_UI_LOCAL_MODULE_DIR"
 
@@ -586,16 +699,26 @@ if [ "$#" -eq 6 ]; then
 
 		echo "Copying the Project Workspace binaries to Main Job Workspace"
 		cp -R $project_dir/binaries $WORKSPACE
-		
 		echo "Removing the Project Workspace binaries as they are copied to Job Workspace"
 		rm -rf $project_dir/binaries
 		
+		echo "Removing intermediate files for Android Mobile Binary"
 		if [ $BUILD_FOR_ANDROID_MOBILE = "true" ]; then
-			cd  $WORKSPACE/binaries/android
-		else 
-			if [ $BUILD_FOR_ANDROID_TAB_RC_CLIENT = "true" ]; then
-				cd  $WORKSPACE/binaries/tabrcandroid
-			fi
+			cd  $WORKSPACE/binaries/android		
+		fi
+		if [ -f "zipalign" ]; then
+			rm -rf zipalign
+		fi
+		if [ -f "$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME" ]; then
+			rm -rf "$KCI_ANDROID_SIGNING_KEYSTORE_FILE_NAME"
+		fi
+		if [ -f "luavmandroid.apk" ]; then
+			rm -rf luavmandroid.apk
+		fi
+		
+		echo "Removing intermediate files for Android Tablet Binary"
+		if [ $BUILD_FOR_ANDROID_TAB_RC_CLIENT = "true" ]; then
+			cd  $WORKSPACE/binaries/tabrcandroid
 		fi
 		if [ -f "zipalign" ]; then
 			rm -rf zipalign

@@ -122,12 +122,12 @@ echo "IPHONE_TAB_ENABLED initial value=> $IPHONE_TAB_ENABLED"
 
 WINDOWS8_ENABLED="false"
 echo "WINDOWS8_ENABLED initial value=> $WINDOWS8_ENABLED"
-#WINDOWS8_TAB_ENABLED="false"
-#echo "WINDOWS8_TAB_ENABLED initial value=> $WINDOWS8_TAB_ENABLED"
+WINDOWS8_TAB_ENABLED="false"
+#cho "WINDOWS8_TAB_ENABLED initial value=> $WINDOWS8_TAB_ENABLED"
 WINDOWS81_ENABLED="false"
 echo "WINDOWS81_ENABLED initial value=> $WINDOWS81_ENABLED"
-#WINDOWS81_TAB_ENABLED="false"
-#echo "WINDOWS81_TAB_ENABLED initial value=> $WINDOWS81_TAB_ENABLED"
+WINDOWS81_TAB_ENABLED="false"
+echo "WINDOWS81_TAB_ENABLED initial value=> $WINDOWS81_TAB_ENABLED"
 
 
 # Condition to check if the number of parameters passed as input 
@@ -160,18 +160,18 @@ if [ "$#" -eq 30 ]; then
         WINDOWS8_ENABLED="true"
         echo "windows 8 mobile enabled"
       fi
-      # if [ "$CHANNEL" = "win8T" ]; then
-      #   WINDOWS8_TAB_ENABLED="true"
-      #   echo "windows 8 tab enabled"
-      # fi
+      if [ "$CHANNEL" = "win8T" ]; then
+        WINDOWS8_TAB_ENABLED="true"
+        echo "windows 8 tab enabled"
+      fi
       if [ "$CHANNEL" = "win81" ]; then
         WINDOWS81_ENABLED="true"
         echo "windows 8.1 mobile enabled"
       fi
-      # if [ "$CHANNEL" = "win81T" ]; then
-      #   WINDOWS81_TAB_ENABLED="true"
-      #   echo "windows 8.1 tab enabled"
-      # fi
+       if [ "$CHANNEL" = "win81T" ]; then
+         WINDOWS81_TAB_ENABLED="true"
+         echo "windows 8.1 tab enabled"
+       fi
     done
 
  ### Below code no longer required since all the binaries are now being copied back to master before being fed to OTA process
@@ -220,9 +220,11 @@ if [ "$#" -eq 30 ]; then
   # echo "WINDOWS81_TAB_ENABLED updated value=> $WINDOWS81_TAB_ENABLED"
 
   #Standard Download Link Label
-  STD_DOWNLOAD_LINK_LABEL="Click Here To Install"
+  STD_INSTALL_LINK_LABEL="Click Here to Install"
+  STD_DOWNLOAD_LINK_LABEL="Click Here to Download"
   ARTEFACT_UNAVAILABLE_LABEL="Artifact Currently Unavailable"
   DISABLED_LINK_STYLE="pointer-events: none; cursor: default; color:black;"
+  LINK_UNLINK="true"
 
   # Checking and creating $OTA_TEMP_DIR folder if not already available
   echo "Checking if $OTA_TEMP_DIR already exists?"
@@ -349,6 +351,7 @@ if [ "$#" -eq 30 ]; then
     if [ $IPHONE_ENABLED = "true" ] || [ $IPHONE_TAB_ENABLED = "true" ]; then
       echo "iphone mobile and/or tablet related OTA in scope"
       IPHONE_BINARY_LABEL=""
+	  IPHONE_DOWNLOAD_LABEL=""
       IPHONE_LINK=""
       IPHONE_KAR_LABEL=""
       IPHONE_KAR_LINK=""
@@ -356,6 +359,8 @@ if [ "$#" -eq 30 ]; then
       IPAD_LINK=""
       IPAD_KAR_LABEL=""
       IPAD_KAR_LINK=""
+	  IPHONE_LINK_UNLINK="true"
+	  IPAD_LINK_UNLINK="true"
 
       ###START OF IPHONE MOBILE OTA
       if [ $IPHONE_ENABLED = "true" ]; then
@@ -383,19 +388,21 @@ if [ "$#" -eq 30 ]; then
 	    ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/"
             cp "$IPHONE_BINARY_PATH/$IPHONE_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY"
             ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/"
-
+	    
             if [ -f "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_BINARY" ]; then
               echo "Successfully copied $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
-              IPHONE_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+              IPHONE_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
+			  IPHONE_DOWNLOAD_LABEL=$STD_DOWNLOAD_LINK_LABEL
               echo "IPHONE_BINARY_LABEL value is set to :: $IPHONE_BINARY_LABEL"
             else
               echo "Could not copy $IPHONE_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
               IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+			  IPHONE_DOWNLOAD_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
               echo "Changing IPHONE_BINARY_LABEL value to :: $IPHONE_BINARY_LABEL"
             fi
             if [ -f "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME/$IPHONE_KAR" ]; then
               echo "Successfully copied $IPHONE_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME location"
-              IPHONE_KAR_LABEL=$STD_DOWNLOAD_LINK_LABEL
+              IPHONE_KAR_LABEL=$STD_INSTALL_LINK_LABEL
               echo "IPHONE_KAR_LABEL value is set to :: $IPHONE_KAR_LABEL"
             else
               echo "Could not copy $IPHONE_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
@@ -425,38 +432,51 @@ if [ "$#" -eq 30 ]; then
             else
              echo "$IPHONE_PLIST_FILE does not exist"
              IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+			 IPHONE_DOWNLOAD_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
 			 IPHONE_KAR_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
             fi
           else
             echo "Unable to create $IPHONE_FOLDER_NAME folder under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
 			IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+			IPHONE_DOWNLOAD_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
 			IPHONE_KAR_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
           fi
         else
           echo "$IPHONE_BINARY_PATH does not exist"
 		  IPHONE_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+		  IPHONE_DOWNLOAD_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
 		  IPHONE_KAR_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
         fi
-			## If INDEX_FILE template has been successfully copied in the previous steps above, apply iphone specific changes
+            ## If INDEX_FILE template has been successfully copied in the previous steps above, apply iphone specific changes
             echo "Checking if template $INDEX_FILE is in place, and if found, apply iPhone mobile specific changes"
             if [ -f "$INDEX_FILE" ]; then
               echo "Template $INDEX_FILE is in place, applying iphone specific changes"
-              if [ "$IPHONE_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
-                IPHONE_LINK=$DISABLED_LINK_STYLE
+			  echo "$IPHONE_BINARY_LABEL"
+              if [ "$IPHONE_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
+			    IPHONE_LINK=$DISABLED_LINK_STYLE
+				IPHONE_LINK_UNLINK="false"
+				
               fi
-              if [ "$IPHONE_KAR_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+              if [ "$IPHONE_KAR_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
                 IPHONE_KAR_LINK=$DISABLED_LINK_STYLE
+				
               fi
               echo "Applying iphone specific changes on $INDEX_FILE file"
-              sed -i -e 's|$iphone_plist|'"$IPHONE_STRING"'|g' $INDEX_FILE
+			  sed -i -e 's|$iphone_plist|'"$IPHONE_STRING"'|g' $INDEX_FILE
               sed -i -e 's|$iphone_folder_name|'"$IPHONE_FOLDER_NAME"'|g' $INDEX_FILE
               sed -i -e 's|$iphone_kar|'"$IPHONE_KAR"'|g' $INDEX_FILE
+			  sed -i -e 's|$iphone_ipa|'"$IPHONE_BINARY"'|g' $INDEX_FILE
+			  
               ##NEW START
+			  echo "$IPHONE_LINK"
               sed -i -e 's|$iPhone_link|'"$IPHONE_LINK"'|g' $INDEX_FILE
+			  sed -i -e 's|$iPhone_delink|'"$IPHONE_LINK_UNLINK"'|g' $INDEX_FILE
               sed -i -e 's|$iPhone_binary_label|'"$IPHONE_BINARY_LABEL"'|g' $INDEX_FILE
+			   sed -i -e 's|$iphone_download_label|'"$IPHONE_DOWNLOAD_LABEL"'|g' $INDEX_FILE
               sed -i -e 's|$iPhone_kar_link|'"$IPHONE_KAR_LINK"'|g' $INDEX_FILE
               sed -i -e 's|$iPhone_kar_label|'"$IPHONE_KAR_LABEL"'|g' $INDEX_FILE
               ##NEW END
+			  
 
               echo "Done with applying iphone specific changes on $INDEX_FILE file"
             else
@@ -494,7 +514,7 @@ if [ "$#" -eq 30 ]; then
             ## Insert code here to check if the iphone tab binary and kar file got copied to the intended folder
             if [ -f "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_BINARY" ]; then
               echo "Successfully copied $IPHONE_TAB_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
-              IPAD_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+              IPAD_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
               echo "IPAD_BINARY_LABEL value is set to :: $IPAD_BINARY_LABEL"
             else
               echo "Could not copy $IPHONE_TAB_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
@@ -503,7 +523,7 @@ if [ "$#" -eq 30 ]; then
             fi
             if [ -f "$IPHONE_TAB_BINARY_PATH/$IPHONE_TAB_KAR" ]; then
               echo "Successfully copied $IPHONE_TAB_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
-              IPAD_KAR_LABEL=$STD_DOWNLOAD_LINK_LABEL
+              IPAD_KAR_LABEL=$STD_INSTALL_LINK_LABEL
               echo "IPAD_KAR_LABEL value is set to :: $IPAD_KAR_LABEL"
             else
               echo "Could not copy $IPHONE_TAB_KAR to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_TAB_FOLDER_NAME location"
@@ -548,10 +568,11 @@ if [ "$#" -eq 30 ]; then
             echo "Checking if template $INDEX_FILE is in place, and if found, apply iPhone tab specific changes"
             if [ -f "$INDEX_FILE" ]; then
               echo "Template $INDEX_FILE is in place, applying iphone specific changes"
-              if [ "$IPAD_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+              if [ "$IPAD_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
                 IPAD_LINK=$DISABLED_LINK_STYLE
+				IPAD_LINK_UNLINK="false"
               fi
-              if [ "$IPAD_KAR_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+              if [ "$IPAD_KAR_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
                 IPAD_KAR_LINK=$DISABLED_LINK_STYLE
               fi
               echo "Applying iphone specific changes on $INDEX_FILE file"
@@ -560,6 +581,7 @@ if [ "$#" -eq 30 ]; then
               sed -i -e 's|$iphoneT_kar|'"$IPHONE_TAB_KAR"'|g' $INDEX_FILE
               ##NEW START
               sed -i -e 's|$iPad_link|'"$IPAD_LINK"'|g' $INDEX_FILE
+			   sed -i -e 's|$iPad_delink|'"$IPAD_LINK_UNLINK"'|g' $INDEX_FILE
               sed -i -e 's|$iPad_binary_label|'"$IPAD_BINARY_LABEL"'|g' $INDEX_FILE
               sed -i -e 's|$iPad_kar_link|'"$IPAD_KAR_LINK"'|g' $INDEX_FILE
               sed -i -e 's|$iPad_kar_label|'"$IPAD_KAR_LABEL"'|g' $INDEX_FILE
@@ -584,6 +606,8 @@ if [ "$#" -eq 30 ]; then
       ANDROID_LINK=""
       ANDROID_TAB_BINARY_LABEL=""
       ANDROID_TAB_LINK=""
+	  ANDROID_LINK_UNLINK="true"
+	  ANDROID_TAB_LINK_UNLINK="true"
 
 
       ###START OF ANDROID MOBILE OTA
@@ -604,7 +628,7 @@ if [ "$#" -eq 30 ]; then
              cp "$ANDROID_BINARY_PATH/$ANDROID_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY"
              if [ -f "$ANDROID_BINARY_PATH/$ANDROID_BINARY" ]; then
                echo "Successfully copied $ANDROID_BINARY to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME/$ANDROID_BINARY location"
-               ANDROID_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+               ANDROID_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
                echo "ANDROID_BINARY_LABEL value is set to :: $ANDROID_BINARY_LABEL"
              else
                echo "Could not copy $ANDROID_BINARY to $ANDROID_BINARY_PATH location"
@@ -624,12 +648,14 @@ if [ "$#" -eq 30 ]; then
              echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
              if [ -f "$INDEX_FILE" ]; then
                echo "Template $INDEX_FILE is in place, applying android specific changes"
-               if [ "$ANDROID_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+               if [ "$ANDROID_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
                  ANDROID_LINK=$DISABLED_LINK_STYLE
+				 ANDROID_LINK_UNLINK="false"
                fi
                sed -i -e 's|$Android_Installer|'"$ANDROID_STRING"'|g' $INDEX_FILE
                ##NEW START
                sed -i -e 's|$android_link|'"$ANDROID_LINK"'|g' $INDEX_FILE
+			   sed -i -e 's|$android_delink|'"$ANDROID_LINK_UNLINK"'|g' $INDEX_FILE
                sed -i -e 's|$android_binary_label|'"$ANDROID_BINARY_LABEL"'|g' $INDEX_FILE
                ##NEW END
                echo "Done with applying android specific changes on $INDEX_FILE file"
@@ -659,7 +685,7 @@ if [ "$#" -eq 30 ]; then
              cp "$ANDROID_TAB_BINARY_PATH/$ANDROID_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_TAB_FOLDER_NAME/$ANDROID_BINARY"
              if [ -f "$ANDROID_TAB_BINARY_PATH/$ANDROID_TAB_BINARY" ]; then
                echo "Successfully copied $ANDROID_TAB_BINARY to $ANDROID_TAB_BINARY_PATH location"
-               ANDROID_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+               ANDROID_TAB_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
                echo "ANDROID_TAB_BINARY_LABEL value is set to :: $ANDROID_TAB_BINARY_LABEL"
              else
                echo "Could not copy $ANDROID_TAB_BINARY to $ANDROID_TAB_BINARY_PATH location"
@@ -678,14 +704,16 @@ if [ "$#" -eq 30 ]; then
 		 echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
 		 if [ -f "$INDEX_FILE" ]; then
 		   echo "Template $INDEX_FILE is in place, applying android specific changes"
-		   if [ "$ANDROID_TAB_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+		   if [ "$ANDROID_TAB_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
 			 ANDROID_TAB_LINK=$DISABLED_LINK_STYLE
+			 ANDROID_TAB_LINK_UNLINK="false"
 		   fi
 
 		   sed -i -e 's|$AndroidT_Installer|'"$ANDROID_TAB_STRING"'|g' $INDEX_FILE
 		   ##NEW START
 		   sed -i -e 's|$android_tab_link|'"$ANDROID_TAB_LINK"'|g' $INDEX_FILE
 		   sed -i -e 's|$android_tab_binary_label|'"$ANDROID_TAB_BINARY_LABEL"'|g' $INDEX_FILE
+		   sed -i -e 's|$android_tab_delink|'"$ANDROID_TAB_LINK_UNLINK"'|g' $INDEX_FILE
 		   ##NEW END
 		   echo "Done with applying android tab specific changes on $INDEX_FILE file"
 		 else
@@ -715,6 +743,8 @@ if [ "$#" -eq 30 ]; then
       WINDOWS81_LINK=""
       #WINDOWS81_TAB_BINARY_LABEL=""
       #WINDOWS81_TAB_LINK=""
+	  WINDOWS8_LINK_UNLINK="true"
+	  WINDOWS81_LINK_UNLINK="true"
 
 
       ###START OF WINDOWS8 MOBILE OTA
@@ -735,7 +765,7 @@ if [ "$#" -eq 30 ]; then
              cp "$WINDOWS8_BINARY_PATH/$WINDOWS8_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_FOLDER_NAME/$WINDOWS8_BINARY"
              if [ -f "$WINDOWS8_BINARY_PATH/$WINDOWS8_BINARY" ]; then
                echo "Successfully copied $WINDOWS8_BINARY to $WINDOWS8_BINARY_PATH location"
-               WINDOWS8_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+               WINDOWS8_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
                echo "WINDOWS8_BINARY_LABEL value is set to :: $WINDOWS8_BINARY_LABEL"
              else
                echo "Could not copy $WINDOWS8_BINARY to $WINDOWS8_BINARY_PATH location"
@@ -754,13 +784,15 @@ if [ "$#" -eq 30 ]; then
 		 echo "Checking if template $INDEX_FILE is in place, and if found, apply windows8 specific changes"
 		 if [ -f "$INDEX_FILE" ]; then
 		   echo "Template $INDEX_FILE is in place, applying windows8 specific changes"
-		   if [ "$WINDOWS8_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+		   if [ "$WINDOWS8_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
 			 WINDOWS8_LINK=$DISABLED_LINK_STYLE
+			 WINDOWS8_LINK_UNLINK="false"
 		   fi
 		   sed -i -e 's|$Windows8_Installer|'"$WINDOWS8_STRING"'|g' $INDEX_FILE
 		   ##NEW START
 		   sed -i -e 's|$windows8_link|'"$WINDOWS8_LINK"'|g' $INDEX_FILE
 		   sed -i -e 's|$windows8_binary_label|'"$WINDOWS8_BINARY_LABEL"'|g' $INDEX_FILE
+		   sed -i -e 's|$win8_delink|'"$WINDOWS8_LINK_UNLINK"'|g' $INDEX_FILE
 		   ##NEW END
 		   echo "Done with applying windows8 specific changes on $INDEX_FILE file"
 		 else
@@ -772,59 +804,59 @@ if [ "$#" -eq 30 ]; then
       ###END OF WINDOWS8 MOBILE OTA
 
       ###START OF WINDOWS8 TAB OTA
-      # if [ $WINDOWS8_TAB_ENABLED = "true" ]; then
-      #   WINDOWS8_TAB_FOLDER_NAME="windows8Tab"
-      #   echo "WINDOWS8_TAB_FOLDER_NAME => $WINDOWS8_TAB_FOLDER_NAME"
-      #   WINDOWS8_TAB_STRING="$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY"
-      #   echo "WINDOWS8_TAB_STRING => $WINDOWS8_TAB_STRING"
-      #   echo "Attempting to perform windows8 tab related OTA activities"
-      #    if [ -d "$WINDOWS8_TAB_BINARY_PATH" ]; then
-      #      echo "$WINDOWS8_TAB_BINARY_PATH exists"
-      #      echo "Creating $WINDOWS8_TAB_FOLDER_NAME folder under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
-      #      mkdir -p $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME
-      #      if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME" ]; then
-      #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder is in place"
-      #        echo "WINDOWS8_TAB_BINARY => $WINDOWS8_TAB_BINARY"
-      #        echo "Copying windows8 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder"
-      #        cp "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY"
-                # if [ -f "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" ]; then
-                #   echo "Successfully copied $WINDOWS8_TAB_BINARY to $WINDOWS8_TAB_BINARY_PATH location"
-                #   WINDOWS8_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
-                #   echo "WINDOWS8_TAB_BINARY_LABEL value is set to :: $WINDOWS8_TAB_BINARY_LABEL"
-                # else
-                #   echo "Could not copy $WINDOWS8_TAB_BINARY to $WINDOWS8_TAB_BINARY_PATH location"
-                #   WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
-                #   echo "Changing WINDOWS8_TAB_BINARY_LABEL value to :: $WINDOWS8_TAB_BINARY_LABEL"
-                # fi
-      #
-      #      else
-      #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder does not exist"
-	  #			WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
-      #      fi
-      #     else
-      #      echo "$WINDOWS8_TAB_BINARY_PATH does not exist"
-	  #			WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL	  
-      #    fi
-            ## If INDEX_FILE template has been successfully copied in the previous steps above, apply windows8 specific changes
-      #        echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
-      #        if [ -f "$INDEX_FILE" ]; then
-      #          echo "Template $INDEX_FILE is in place, applying android specific changes"
-                  # if [ "$WINDOWS8_TAB_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
-                  #   WINDOWS8_TAB_LINK=$DISABLED_LINK_STYLE
-                  # fi
-      #          sed -i -e 's|$Windows8T_Installer|'"$WINDOWS8_TAB_STRING"'|g' $INDEX_FILE
-                  ##NEW START
-                  # sed -i -e 's|$windows8_tab_link|'"$WINDOWS8_TAB_LINK"'|g' $INDEX_FILE
-                  # sed -i -e 's|$windows8_tab_binary_label|'"$WINDOWS8_TAB_BINARY_LABEL"'|g' $INDEX_FILE
-                  ##NEW END
-      #          echo "Done with applying windows 8 tablet specific changes on $INDEX_FILE file"
-      #        else
-      #          echo "$INDEX_FILE does not exist"
-      #          #echo "Exiting...."
-      #          #exit
-      #        fi
+       if [ $WINDOWS8_TAB_ENABLED = "true" ]; then
+         WINDOWS8_TAB_FOLDER_NAME="windows8Tab"
+         echo "WINDOWS8_TAB_FOLDER_NAME => $WINDOWS8_TAB_FOLDER_NAME"
+         WINDOWS8_TAB_STRING="$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY"
+         echo "WINDOWS8_TAB_STRING => $WINDOWS8_TAB_STRING"
+         echo "Attempting to perform windows8 tab related OTA activities"
+          if [ -d "$WINDOWS8_TAB_BINARY_PATH" ]; then
+            echo "$WINDOWS8_TAB_BINARY_PATH exists"
+            echo "Creating $WINDOWS8_TAB_FOLDER_NAME folder under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
+            mkdir -p $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME
+            if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME" ]; then
+              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder is in place"
+              echo "WINDOWS8_TAB_BINARY => $WINDOWS8_TAB_BINARY"
+              echo "Copying windows8 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder"
+              cp "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME/$WINDOWS8_TAB_BINARY"
+                 if [ -f "$WINDOWS8_TAB_BINARY_PATH/$WINDOWS8_TAB_BINARY" ]; then
+                   echo "Successfully copied $WINDOWS8_TAB_BINARY to $WINDOWS8_TAB_BINARY_PATH location"
+                   WINDOWS8_TAB_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
+                   echo "WINDOWS8_TAB_BINARY_LABEL value is set to :: $WINDOWS8_TAB_BINARY_LABEL"
+                 else
+                   echo "Could not copy $WINDOWS8_TAB_BINARY to $WINDOWS8_TAB_BINARY_PATH location"
+                   WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+                   echo "Changing WINDOWS8_TAB_BINARY_LABEL value to :: $WINDOWS8_TAB_BINARY_LABEL"
+                 fi
+      
+            else
+              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS8_TAB_FOLDER_NAME folder does not exist"
+	  			WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+            fi
+           else
+            echo "$WINDOWS8_TAB_BINARY_PATH does not exist"
+	  			WINDOWS8_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL	  
+          fi
+           ## If INDEX_FILE template has been successfully copied in the previous steps above, apply windows8 specific changes
+              echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
+              if [ -f "$INDEX_FILE" ]; then
+                echo "Template $INDEX_FILE is in place, applying android specific changes"
+                  if [ "$WINDOWS8_TAB_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
+                    WINDOWS8_TAB_LINK=$DISABLED_LINK_STYLE
+                  fi
+                sed -i -e 's|$Windows8T_Installer|'"$WINDOWS8_TAB_STRING"'|g' $INDEX_FILE
+                 ##NEW START
+                 sed -i -e 's|$windows8_tab_link|'"$WINDOWS8_TAB_LINK"'|g' $INDEX_FILE
+                 sed -i -e 's|$windows8_tab_binary_label|'"$WINDOWS8_TAB_BINARY_LABEL"'|g' $INDEX_FILE
+                 ##NEW END
+                echo "Done with applying windows 8 tablet specific changes on $INDEX_FILE file"
+              else
+                echo "$INDEX_FILE does not exist"
+                #echo "Exiting...."
+                #exit
+              fi
 	  
-      # fi
+       fi
       ###END OF WINDOWS8 TAB OTA
 
 
@@ -846,7 +878,7 @@ if [ "$#" -eq 30 ]; then
              cp "$WINDOWS81_BINARY_PATH/$WINDOWS81_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_FOLDER_NAME/$WINDOWS81_BINARY"
              if [ -f "$WINDOWS81_BINARY_PATH/$WINDOWS81_BINARY" ]; then
                echo "Successfully copied $WINDOWS81_BINARY to $WINDOWS81_BINARY_PATH location"
-               WINDOWS81_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
+               WINDOWS81_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
                echo "WINDOWS81_BINARY_LABEL value is set to :: $WINDOWS81_BINARY_LABEL"
              else
                echo "Could not copy $WINDOWS81_BINARY to $WINDOWS81_BINARY_PATH location"
@@ -865,75 +897,77 @@ if [ "$#" -eq 30 ]; then
 		 echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
 		 if [ -f "$INDEX_FILE" ]; then
 		   echo "Template $INDEX_FILE is in place, applying android specific changes"
-		   if [ "$WINDOWS81_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
+		   if [ "$WINDOWS81_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
 			 WINDOWS81_LINK=$DISABLED_LINK_STYLE
+			 WINDOWS81_LINK_UNLINK="false"
 		   fi
 		   sed -i -e 's|$Windows81_Installer|'"$WINDOWS81_STRING"'|g' $INDEX_FILE
 		   ##NEW START
 		   sed -i -e 's|$windows81_link|'"$WINDOWS81_LINK"'|g' $INDEX_FILE
 		   sed -i -e 's|$windows81_binary_label|'"$WINDOWS81_BINARY_LABEL"'|g' $INDEX_FILE
+		   sed -i -e 's|$win81_delink|'"$WINDOWS81_LINK_UNLINK"'|g' $INDEX_FILE
 		   ##NEW END
 		   echo "Done with applying android specific changes on $INDEX_FILE file"
 		 else
 		   echo "$INDEX_FILE does not exist"
-		   #echo "Exiting...."
-		   #exit
+		   echo "Exiting...."
+		   exit
 		 fi
       fi
       ###END OF WINDOWS8.1 MOBILE OTA
 
       ###START OF WINDOWS8.1 TAB OTA
-      # if [ $WINDOWS81_TAB_ENABLED = "true" ]; then
-      #   WINDOWS81_TAB_FOLDER_NAME="windows81Tab"
-      #   echo "WINDOWS81_TAB_FOLDER_NAME => $WINDOWS81_TAB_FOLDER_NAME"
-      #   WINDOWS81_TAB_STRING="$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY"
-      #   echo "WINDOWS81_TAB_STRING => $WINDOWS81_TAB_STRING"
-      #   echo "Attempting to perform windows8.1 tab related OTA activities"
-      #    if [ -d "$WINDOWS81_TAB_BINARY_PATH" ]; then
-      #      echo "$WINDOWS81_TAB_BINARY_PATH exists"
-      #      echo "Creating $WINDOWS81_TAB_FOLDER_NAME folder under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
-      #      mkdir -p $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME
-      #      if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME" ]; then
-      #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder is in place"
-      #        echo "WINDOWS81_TAB_BINARY => $WINDOWS81_TAB_BINARY"
-      #        echo "Copying windows8.1 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder"
-      #        cp "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY"
-                # if [ -f "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" ]; then
-                #   echo "Successfully copied $WINDOWS81_TAB_BINARY to $WINDOWS81_TAB_BINARY_PATH location"
-                #   WINDOWS81_TAB_BINARY_LABEL=$STD_DOWNLOAD_LINK_LABEL
-                #   echo "WINDOWS81_TAB_BINARY_LABEL value is set to :: $WINDOWS81_TAB_BINARY_LABEL"
-                # else
-                #   echo "Could not copy $WINDOWS81_TAB_BINARY to $WINDOWS81_TAB_BINARY_PATH location"
-                #   WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
-                #   echo "Changing WINDOWS81_TAB_BINARY_LABEL value to :: $WINDOWS81_TAB_BINARY_LABEL"
-                # fi
-      #      else
-      #        echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder does not exist"
-           #   WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL	  
-      #      fi
-      #     else
-      #      echo "$WINDOWS81_TAB_BINARY_PATH does not exist"
-		  #   WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
-      #    fi
+       if [ $WINDOWS81_TAB_ENABLED = "true" ]; then
+         WINDOWS81_TAB_FOLDER_NAME="windows81Tab"
+         echo "WINDOWS81_TAB_FOLDER_NAME => $WINDOWS81_TAB_FOLDER_NAME"
+         WINDOWS81_TAB_STRING="$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY"
+         echo "WINDOWS81_TAB_STRING => $WINDOWS81_TAB_STRING"
+         echo "Attempting to perform windows8.1 tab related OTA activities"
+          if [ -d "$WINDOWS81_TAB_BINARY_PATH" ]; then
+            echo "$WINDOWS81_TAB_BINARY_PATH exists"
+            echo "Creating $WINDOWS81_TAB_FOLDER_NAME folder under $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder"
+            mkdir -p $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME
+            if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME" ]; then
+              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder is in place"
+              echo "WINDOWS81_TAB_BINARY => $WINDOWS81_TAB_BINARY"
+              echo "Copying windows8.1 tab binary to $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder"
+              cp "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME/$WINDOWS81_TAB_BINARY"
+                 if [ -f "$WINDOWS81_TAB_BINARY_PATH/$WINDOWS81_TAB_BINARY" ]; then
+                   echo "Successfully copied $WINDOWS81_TAB_BINARY to $WINDOWS81_TAB_BINARY_PATH location"
+                   WINDOWS81_TAB_BINARY_LABEL=$STD_INSTALL_LINK_LABEL
+                   echo "WINDOWS81_TAB_BINARY_LABEL value is set to :: $WINDOWS81_TAB_BINARY_LABEL"
+                 else
+                   echo "Could not copy $WINDOWS81_TAB_BINARY to $WINDOWS81_TAB_BINARY_PATH location"
+                   WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+                   echo "Changing WINDOWS81_TAB_BINARY_LABEL value to :: $WINDOWS81_TAB_BINARY_LABEL"
+                 fi
+            else
+              echo "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$WINDOWS81_TAB_FOLDER_NAME folder does not exist"
+             WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL	  
+            fi
+           else
+            echo "$WINDOWS81_TAB_BINARY_PATH does not exist"
+		     WINDOWS81_TAB_BINARY_LABEL=$ARTEFACT_UNAVAILABLE_LABEL
+          fi
 			## If INDEX_FILE template has been successfully copied in the previous steps above, apply windows8.1 specific changes
-      #        echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
-      #        if [ -f "$INDEX_FILE" ]; then
-      #          echo "Template $INDEX_FILE is in place, applying android specific changes"
-                  # if [ "$WINDOWS81_TAB_BINARY_LABEL" != "$STD_DOWNLOAD_LINK_LABEL" ]; then
-                  #   WINDOWS81_TAB_LINK=$DISABLED_LINK_STYLE
-                  # fi
-      #          sed -i -e 's|$Windows81T_Installer|'"$WINDOWS81_TAB_STRING"'|g' $INDEX_FILE
-                  ##NEW START
-                  # sed -i -e 's|$windows81_tab_link|'"$WINDOWS81_TAB_LINK"'|g' $INDEX_FILE
-                  # sed -i -e 's|$windows81_tab_binary_label|'"$WINDOWS81_TAB_BINARY_LABEL"'|g' $INDEX_FILE
-                  ##NEW END
-      #          echo "Done with applying windows 8.1 Tab specific changes on $INDEX_FILE file"
-      #        else
-      #          echo "$INDEX_FILE does not exist"
-      #          #echo "Exiting...."
-      #          #exit
-      #        fi
-      # fi
+              echo "Checking if template $INDEX_FILE is in place, and if found, apply android specific changes"
+              if [ -f "$INDEX_FILE" ]; then
+                echo "Template $INDEX_FILE is in place, applying android specific changes"
+                  if [ "$WINDOWS81_TAB_BINARY_LABEL" != "$STD_INSTALL_LINK_LABEL" ]; then
+                    WINDOWS81_TAB_LINK=$DISABLED_LINK_STYLE
+                  fi
+                sed -i -e 's|$Windows81T_Installer|'"$WINDOWS81_TAB_STRING"'|g' $INDEX_FILE
+                 ##NEW START
+                  sed -i -e 's|$windows81_tab_link|'"$WINDOWS81_TAB_LINK"'|g' $INDEX_FILE
+                  sed -i -e 's|$windows81_tab_binary_label|'"$WINDOWS81_TAB_BINARY_LABEL"'|g' $INDEX_FILE
+                 ##NEW END
+                echo "Done with applying windows 8.1 Tab specific changes on $INDEX_FILE file"
+              else
+                echo "$INDEX_FILE does not exist"
+                echo "Exiting...."
+                exit
+              fi
+       fi
       ###END OF WINDOWS8.1 TAB OTA
 
     else
@@ -961,19 +995,19 @@ if [ "$#" -eq 30 ]; then
     echo "Deleting backup plist file $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphoneT.plist-e"
     rm -f $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/iphoneT.plist-e
   fi
-
-  	if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
+  if [ $KCI_ENABLE_S3_PUBLISH = "true" ]; then
   	echo "Listing the OTA contents"
   	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/"
   	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$IPHONE_FOLDER_NAME"
   	ls -ltra "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR/$ANDROID_FOLDER_NAME"
-	  ## Publish the created OTA artefacts to S3 bucket
-	  ##START
-	  if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
-	  	echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
-		echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
-		cd $OTA_TEMP_DIR/$OTA_SUB_DIR
-		echo "Now Issuing the following cp command on S3"
+  
+  	## Publish the created OTA artefacts to S3 bucket
+  	##START
+  	if [ -d "$OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR" ]; then
+	    echo "Trying to publish contents of $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR to S3 bucket"
+	    echo "Changing directory to $OTA_TEMP_DIR/$OTA_SUB_DIR"
+	    cd $OTA_TEMP_DIR/$OTA_SUB_DIR
+	    echo "Now Issuing the following cp command on S3"
 	    #echo "aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
 	    #aws s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
 	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
@@ -982,24 +1016,36 @@ if [ "$#" -eq 30 ]; then
 	    #aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
 	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
 	    #aws s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
-	    echo "AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
-	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
-		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
-	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
-		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
-	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
-		echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
-	    AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
 
-		echo "Done with attempt to publish to s3 bucket!!"
+	   # echo "AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
+	    #AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 cp $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
+	   # echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
+	    #AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
+	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
+	    #AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
+	    #echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
+	    #AWS_ACCESS_KEY_ID=$KCI_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$KCI_AWS_SECRET_ACCESS_KEY $KCI_AWS_CLI_CMD s3 ls $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
+	    
+	    echo "$KCI_AWS_CLI_CMD s3 cp --profile $KCI_S3_PROFILE_NAME $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive"
+	    $KCI_AWS_CLI_CMD s3 cp --profile Kony $TGT_DIR $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR --recursive
+	    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/"
+	    $KCI_AWS_CLI_CMD s3 ls --profile $KCI_S3_PROFILE_NAME $S3_SERVER_URL/$S3_SUB_FOLDER_URL/
+	    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/"
+	    $KCI_AWS_CLI_CMD s3 ls --profile $KCI_S3_PROFILE_NAME $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/
+	    echo "Listing contents of $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/"
+	    $KCI_AWS_CLI_CMD s3 ls --profile $KCI_S3_PROFILE_NAME $S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME/$TGT_DIR/
+
+
+	    echo "Done with attempt to publish to s3 bucket!!"
 	  else
-		echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"
+	    echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"
 	  fi
 	  ##END
-	    echo "DONE with S3 Publish!!!"
+	  echo "DONE with S3 Publish!!!"
 	else 
 	  ## Publish the created OTA artefacts to Tomcat OTA
 	  ##START
+	  KCI_TOMCAT_OTA_DIR=$S3_SERVER_URL/$S3_SUB_FOLDER_URL/$JOB_NAME
 	  if [ ! -d "$KCI_TOMCAT_OTA_DIR" ]; then
 		mkdir -p $KCI_TOMCAT_OTA_DIR
 	  fi
@@ -1017,7 +1063,7 @@ if [ "$#" -eq 30 ]; then
 		ls $KCI_TOMCAT_OTA_DIR/
 		echo "Listing contents of $KCI_TOMCAT_OTA_DIR/$TGT_DIR/"
 		ls $KCI_TOMCAT_OTA_DIR/$TGT_DIR/
-
+   
 		echo "Done with attempt to publish to Tomcat!!"
 	  else
 		echo "Unable to find $OTA_TEMP_DIR/$OTA_SUB_DIR/$TGT_DIR folder!!"

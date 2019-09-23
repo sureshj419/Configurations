@@ -54,15 +54,18 @@ if [ "$#" -eq 5 ]; then
 			echo "-----------------------------------------------------------"
 			binaryExists="false"
 			testPackageExists="false"
-			ANDROID_PHONE_BINARY=${BASE_FOLDER}/android/$APK_NAME
-			IPHONE_BINARY=${BASE_FOLDER}/iphone/$IPA_NAME
+			ANDROID_PHONE_BINARY=${BASE_FOLDER}/android/
+			IPHONE_BINARY=${BASE_FOLDER}/iphone/
+			
+			echo "ANDROID_PHONE_BINARY::"${ANDROID_PHONE_BINARY}
+			echo "IPHONE_BINARY::"${IPHONE_BINARY}
 			
 			if [[ $TestAndroidPhone = "true" ]]; then
 				
 				while [[ $binaryExists != "true" ]]
 				do
 					sleep 30
-					aws s3 cp ${ANDROID_PHONE_BINARY} . 
+					aws s3 cp ${ANDROID_PHONE_BINARY} ./ --recursive
 				
 					if [ -f "$APK_NAME" ]; then
 	    					echo "The android binary file $APK_NAME found."
@@ -78,7 +81,7 @@ if [ "$#" -eq 5 ]; then
 				while [[ $binaryExists != "true" ]]
 				do
 					sleep 30
-					aws s3 cp ${IPHONE_BINARY} . 
+					aws s3 cp ${IPHONE_BINARY} ./ --recursive
 				
 					if [ -f "$IPA_NAME" ]; then
 	    					echo "The iphone binary file $IPA_NAME found."
@@ -128,7 +131,7 @@ if [ "$#" -eq 5 ]; then
 				while [[ $binaryExists != "true" ]]
 				do
 					sleep 30
-					aws s3 cp ${ANDROID_TAB_BINARY} . 
+					aws s3 cp ${ANDROID_TAB_BINARY} ./ --recursive
 				
 					if [ -f "$APK_NAME" ]; then
 	    					echo "The android binary file $APK_NAME found."
@@ -144,7 +147,7 @@ if [ "$#" -eq 5 ]; then
 				while [[ $binaryExists != "true" ]]
 				do
 					sleep 30
-					aws s3 cp ${IPAD_BINARY} . 
+					aws s3 cp ${IPAD_BINARY} ./ --recursive
 				
 					if [ -f "$IPA_NAME" ]; then
 	    					echo "The ipad binary file $IPA_NAME found."

@@ -1,11 +1,11 @@
 #!/bin/sh
 ###############################################################
-#                 KickStarterScript		                      #
+#                 KickStarterScript		              #
 ###############################################################
 # Purpose:
 # Purpose of this file to remove the pervious binaries on the #
 # master and trigger the Slave job based on the platform 
-# selected by user.											  #
+# selected by user.					      #
 ###############################################################
 
 # Adding the input parameter to a local parameter
@@ -33,14 +33,14 @@ if [ "$#" -eq 1 ]; then
 
 		echo "Executing the shell script on master"
 
-# Creating local parametes for the type of the build required.
+		# Creating local parametes for the type of the build required.
 	
 		iosBuild=false
 		andBuild=false
 		winBuild=false
 		
-# Read the property file and check for which platforms to be build and correspondingly making the 
-# particular parameters defined above as either true or false.
+		# Read the property file and check for which platforms to be build and correspondingly making the 
+		# particular parameters defined above as either true or false.
 
 		if [ $BUILD_FOR_IOS_RC_CLIENT = "true" ] || [ $BUILD_FOR_IOS_IPAD_RC_CLIENT = "true" ]; then
 			iosBuild=true
@@ -87,21 +87,44 @@ if [ "$#" -eq 1 ]; then
 		fi
 		echo "executePipeline is "${executePipeline}
 		echo "KCI_MACHINE_LABEL after is "$KCI_MACHINE_LABEL
-		
+
 		workspaceNew=`echo $WORKSPACE`
 		echo "workspaceNew is ::"$workspaceNew
-		
+
+        CONFIG_FILE=$propertyFile
+        echo "UPDATE CONFIG PROPS WITH ADDITIONAL PROPERTIES"
+        echo 'appid='"${KCI_PROPS_APP_ID}" >> $CONFIG_FILE
+        echo 'appidkey='"${KCI_PROPS_APP_ID}" >> $CONFIG_FILE
+        echo 'KCI_UI_APP_ID='"${KCI_PROPS_APP_ID}" >> $CONFIG_FILE
+        echo 'KCI_UI_APP_NAME='"${KCI_PROPS_APP_NAME}" >> $CONFIG_FILE
+        echo 'appnamekey='"${KCI_PROPS_APP_NAME}" >> $CONFIG_FILE
+        echo 'appversionkey='"${KCI_PROPS_APP_VERSION}" >> $CONFIG_FILE
+        echo 'version='"${KCI_PROPS_APP_VERSION}" >> $CONFIG_FILE
+        echo 'android.versioncode='"${KCI_PROPS_APP_ANDROID_VERSION_CODE}" >> $CONFIG_FILE
+        echo 'appversioncode='"${KCI_PROPS_APP_ANDROID_VERSION_CODE}" >> $CONFIG_FILE
+        echo 'ios.bundleversion='"${KCI_PROPS_APP_IOS_BUNDLE_VERSION}" >> $CONFIG_FILE
+        echo 'iphonebundleversionkey='"${KCI_PROPS_APP_IOS_BUNDLE_VERSION}" >> $CONFIG_FILE
+        echo 'iphonebundleidentifierkey='"${KCI_PROPS_IPHONE_BUNDLE_ID}" >> $CONFIG_FILE
+        echo 'ipadbundleidentifierkey='"${KCI_PROPS_IPAD_BUNDLE_ID}" >> $CONFIG_FILE
+        echo 'android.packagename='"${KCI_PROPS_ANDROID_PACKAGE_NAME}" >> $CONFIG_FILE
+        echo 'build='"${KCI_PROPS_APP_BUILD_MODE}" >> $CONFIG_FILE
+        echo 'build.mode='"${KCI_PROPS_APP_BUILD_MODE}" >> $CONFIG_FILE
+        echo 'default_locale='"${KCI_PROPS_APP_DEFAULT_LOCALE}" >> $CONFIG_FILE
+        echo 'androidmapkey2='"${KCI_PROPS_APP_ANDROID_MAP_KEY}" >> $CONFIG_FILE
+        echo 'remove.print.statements='"${KCI_PROPS_PRINT_STATEMENTS}" >> $CONFIG_FILE
+        echo 'removeprintstatements='"${KCI_PROPS_PRINT_STATEMENTS}" >> $CONFIG_FILE
+        echo 'TGT_HDR_FILE_NAME='"${KCI_PROPS_APP_NAME}-Bridging-Header.h" >> $CONFIG_FILE
 		# Re-writing the property files based on the platfomrs.
 		# If the job is triggered in Mac Slave/ Win Slave. The Slave specific properties are re-written in the file.
 		# If the job is triggered in Mac Slave and Win Slave. Two property files will created with Slave specific properties.
 
-		newCommonPropertyFileName=`echo ${appidkey}_Config.properties`
+		newCommonPropertyFileName=`echo ${KCI_PROPS_APP_ID}_Config.properties`
 		echo "newCommonPropertyFileName ::  $newCommonPropertyFileName"
 
-		macPropertyFileName=`echo ${appidkey}_Config_Mac.properties`
+		macPropertyFileName=`echo ${KCI_PROPS_APP_ID}_Config_Mac.properties`
 		echo "macPropertyFileName ::  $macPropertyFileName"
 
-		winPropertyFileName=`echo ${appidkey}_Config_Win.properties`
+		winPropertyFileName=`echo ${KCI_PROPS_APP_ID}_Config_Win.properties`
 		echo "winPropertyFileName ::  $winPropertyFileName"
 		
 		#This was old hardcoded property being used..
@@ -113,8 +136,8 @@ if [ "$#" -eq 1 ]; then
 		
 		if [ -d $common_config_file_path ]; then
 			
-			if [ -f "$WORKSPACE/ci_config"/${appidkey}_Config.properties ]; then
-				cp "$WORKSPACE/ci_config"/${appidkey}_Config.properties $common_config_file_path
+			if [ -f "$WORKSPACE/ci_config"/${KCI_PROPS_APP_ID}_Config.properties ]; then
+				cp "$WORKSPACE/ci_config"/${KCI_PROPS_APP_ID}_Config.properties $common_config_file_path
 				echo "Copying property file successfull"
 			fi
 			
@@ -123,8 +146,8 @@ if [ "$#" -eq 1 ]; then
 				echo "Copying DeviceFarmCLI file successfull"
 			fi
 
-			if [ -f "$WORKSPACE/ci_config"/${appidkey}.keystore ]; then
-				cp "$WORKSPACE/ci_config"/${appidkey}.keystore $common_config_file_path/ScriptUtils
+			if [ -f "$WORKSPACE/ci_config"/${KCI_PROPS_APP_ID}.keystore ]; then
+				cp "$WORKSPACE/ci_config"/${KCI_PROPS_APP_ID}.keystore $common_config_file_path/ScriptUtils
 				echo "Copying keystore file successfull"
 			fi
 			
@@ -142,12 +165,42 @@ if [ "$#" -eq 1 ]; then
 				cp "$WORKSPACE/ci_config"/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE $common_config_file_path/ScriptUtils/xcode_configs/$KCI_GEN_IPA_TASK_XCODE_EXPORT_OPTIONS_FILE
 				echo "Copying xcode_configs exportOptionsPlist file successfull"
 			fi
-			
 			if [ -f "$WORKSPACE/ci_config"/$IOS_ENTITLEMENTS_FILE ]; then
 				cp "$WORKSPACE/ci_config"/$IOS_ENTITLEMENTS_FILE $common_config_file_path/ScriptUtils/xcode_configs/$IOS_ENTITLEMENTS_FILE
 				echo "Copying xcode_configs IOS_ENTITLEMENTS_FILE:$IOS_ENTITLEMENTS_FILE file successfull"
+			fi			
+			# Added below line as the below folder contains the test_automation folder as well
+			if [ -d "$WORKSPACE/ci_config"/${TEST_AUTOMATION_FOLDER} ]; then
+				cp -r "$WORKSPACE/ci_config"/${TEST_AUTOMATION_FOLDER} $common_config_file_path/
+				echo "Copying xcode_configs TEST_AUTOMATION_FOLDER:${TEST_AUTOMATION_FOLDER} file successfull"
 			fi
-			
+			# Added below line as the below folder contains the release_automation folder as well
+			if [ -d "$WORKSPACE/ci_config"/${STORE_PUBLISH_FOLDER} ]; then
+				cp -r "$WORKSPACE/ci_config"/${STORE_PUBLISH_FOLDER} $common_config_file_path/
+				echo "Copying  STORE_PUBLISH_FOLDER:${STORE_PUBLISH_FOLDER} file successfull"
+			fi
+			# Added below code for checking and copying the AppDelegateExtension zip file
+			#START
+			if [ -f "$WORKSPACE/ci_config"/AppDelegateExtension.zip ]; then
+				cp "$WORKSPACE/ci_config"/AppDelegateExtension.zip $common_config_file_path/ScriptUtils/xcode_configs/AppDelegateExtension.zip
+				echo "Copying AppDelegateExtension.zip file successfull"
+			fi			
+			#END
+			# Added below code for checking and copying the Tealium Frameworks zip file
+			#START
+			if [ -f "$WORKSPACE/ci_config"/Tealium.zip ]; then
+				cp "$WORKSPACE/ci_config"/Tealium.zip $common_config_file_path/ScriptUtils/xcode_configs/Tealium.zip
+				echo "Copying Tealium.zip file successfull"
+			fi			
+			#END	
+			#START
+			if [ -d "$WORKSPACE/ci_config/CustomFiles" ]; then
+				echo "Copying Following Files from CustomFiles directory to Script Utils"
+				ls "$WORKSPACE/ci_config/CustomFiles/"
+				cp "$WORKSPACE/ci_config/CustomFiles"/* $common_config_file_path/ScriptUtils/xcode_configs/
+				echo "Copying Files in CustomFiles directory successfull"
+			fi			
+			#END			
 			cd "$workspaceNew"
 			echo "Removing the old config folder in worksapce"
 			rm -rf ci_config
@@ -228,16 +281,16 @@ if [ "$#" -eq 1 ]; then
 		if [ "$executePipeline" = "true" ]; then
 			echo "executePipeline is true deleting both workspace binaries in ::$KCI_WIN_SLAVE_MAIN_JOB_NAME :: and ::$KCI_MAC_SLAVE_MAIN_JOB_NAME jobs"
 				cd "$JENKINS_HOME/jobs/$KCI_WIN_SLAVE_MAIN_JOB_NAME"
-				if [ -d "workspace" ]; then
-					cd workspace
+				if [ -d "binaries" ]; then
+					#cd workspace
 					pwd
 					ls
 					rm -rf binaries
 				fi
 
 				cd "$JENKINS_HOME/jobs/$KCI_MAC_SLAVE_MAIN_JOB_NAME"
-				if [ -d "workspace" ]; then
-					cd workspace
+				if [ -d "binaries" ]; then
+					#cd workspace
 					pwd
 					ls
 					rm -rf binaries
@@ -246,16 +299,16 @@ if [ "$#" -eq 1 ]; then
 			echo "executePipeline is false and KCI_MACHINE_LABEL is ::$KCI_MACHINE_LABEL"
 			if [ "$KCI_MACHINE_LABEL" = "ios" ]; then
 				cd "$JENKINS_HOME/jobs/$KCI_MAC_SLAVE_MAIN_JOB_NAME"
-				if [ -d "workspace" ]; then
-					cd workspace
+				if [ -d "binaries" ]; then
+					#cd workspace
 					pwd
 					ls
 					rm -rf binaries
 				fi
 			else
 				cd "$JENKINS_HOME/jobs/$KCI_WIN_SLAVE_MAIN_JOB_NAME"
-				if [ -d "workspace" ]; then
-					cd workspace
+				if [ -d "binaries" ]; then
+					#cd workspace
 					pwd
 					ls
 					rm -rf binaries
